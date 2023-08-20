@@ -16,7 +16,7 @@ MacArm 8.1.0
 ### Work Flow
 <p align="center"><img src="https://github.com/kangpx/onlineTiny2023/assets/118830544/2e0a23cd-2673-4225-b93e-e99a41908b83" width="60%"></p>
 
-1. PC transmits a triplet ($x(\tau)$, $y(\tau)$, $\text{flag}(\tau)$) to MCU through UART, where $x(\tau)$ is the input data, $y(\tau)$ is the input label and $\text{flag}(\tau)$ is the trigger signal for online training;
+1. PC transmits a triplet $(x(\tau)$, $y(\tau)$, $\text{flag}(\tau))$ to MCU through UART, where $x(\tau)$ is the input data, $y(\tau)$ is the input label, $\text{flag}(\tau)$ is the trigger signal for online training and $\tau$ is the current time stamp;
 2. X-CUBE-AI's inference engine performs the inference, during which the input to the last fully connected layer (classifier) is retrieved by a registered callback of platform observer and dumped into the dense input buffer, while the inference output (i.e., the output of the softmax layer) is dumped into the output buffer;
 3. If online training is triggered ($\text{flag}(\tau)$==1) in this round, the implemented online training engine traverses the weights/biases of the classifier, for each weight/bias:
  - the gradient is calculated based on $y_t$ and the corresponding values in the dense input buffer and output buffer;
@@ -28,7 +28,7 @@ MacArm 8.1.0
  - the weight/bias is updated by subtracting the product of the learning rate and the increment;
  $$\boldsymbol{w}(\tau)\leftarrow\boldsymbol{w}(\tau-1)-\gamma \boldsymbol{i}_w(\tau)$$
  $$\boldsymbol{b}(\tau)\leftarrow\boldsymbol{b}(\tau-1)-\gamma \boldsymbol{i}_b(\tau)$$
-($\mu$ and $\gamma$ are momentum and learning rate, respectively.)
+($s$ and $t$ are the group index and the within-group index of the weights, while $\mu$ and $\gamma$ are the momentum and learning rate, respectively.)
 4. MCU transmits the predicted label to PC.
 ### STM32 project
 The uploaded project is for ultra dataset. 
