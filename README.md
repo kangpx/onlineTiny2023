@@ -33,9 +33,9 @@ MacArm 8.1.0
  $$\boldsymbol{b}(\tau)\leftarrow\boldsymbol{b}(\tau-1)-\gamma \boldsymbol{i}_b(\tau)$$
 ($s$ and $t$ are the group index and the within-group index of the weights, while $\mu$ and $\gamma$ are the momentum and learning rate)
 4. MCU transmits the predicted label to PC.
-### STM32 project
+### STM32 Project
 The uploaded project is for ultra dataset. 
-#### Online training engine
+#### Online Training Engine
 Source code of the engine can be found in 
 - `onlineTiny2023/stm32_nucleo_f756zg/nucleo-f756zg-ai_ultra/Core/Inc/online_training.h`
 - `onlineTiny2023/stm32_nucleo_f756zg/nucleo-f756zg-ai_ultra/Core/Src/online_training.c`
