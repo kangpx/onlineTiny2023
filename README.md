@@ -28,5 +28,20 @@ MacArm 8.1.0
  $$\boldsymbol{b}(\tau)\leftarrow\boldsymbol{b}(\tau-1)-\gamma \boldsymbol{i}_b(\tau)$$
 ($\mu$ and $\gamma$ are momentum and learning rate, respectively.)
 4. MCU transmits the predicted label to PC.
-### STM32CUBEIDE project
-- 
+### STM32 project
+The uploaded project is for ultra dataset. 
+#### Online training engine
+Source code of the engine can be found in 
+- `onlineTiny2023/stm32_nucleo_f756zg/nucleo-f756zg-ai_ultra/Core/Inc/online_training.h`
+- `onlineTiny2023/stm32_nucleo_f756zg/nucleo-f756zg-ai_ultra/Core/Src/online_training.c`
+
+The APIs include:
+- ot_init()
+> void ot_init(float ot_lr_, float ot_momentum_);
+
+This function copies the weights of the classifier into SRAM, registers the callback function that retrieves the input to the dense layer and initializes the increments buffer, learning rate and momentum, which should be called after network initialization and before inference. `ot_lr_` parameter is the designated learning rate and `ot_momentum_` is the designated momentum.
+- ot_update()
+> void ot_update(void);
+
+This function updates all the weights and biases of the classifier, which should be called after inference.
+
