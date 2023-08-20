@@ -7,8 +7,6 @@
 ## X-CUBE-AI
 MacArm 8.1.0
 ## Datasets
-- Gym
-  https://www.kaggle.com/datasets/zhaxidelebsz/10-gym-exercises-with-615-abstracted-features
-- QVAR 
-- Ultra
-  https://github.com/kangpx/40khz-ultrasonicDHGR-onlineSemi
+- Gym https://www.kaggle.com/datasets/zhaxidelebsz/10-gym-exercises-with-615-abstracted-features
+- QVAR from PBL
+- Ultra https://github.com/kangpx/40khz-ultrasonicDHGR-onlineSemi
