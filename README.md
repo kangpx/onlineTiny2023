@@ -8,11 +8,11 @@
 - Gym https://www.kaggle.com/datasets/zhaxidelebsz/10-gym-exercises-with-615-abstracted-features
 - QVAR from PBL
 - Ultra https://github.com/kangpx/40khz-ultrasonicDHGR-onlineSemi
+## Saved models
+The three datasets' pre-trained models of each fold (leave-one-user-out) formatted in .pt and .onnx are stored under the the directory `saved_models`. For .pt models, backbone and classifier are stored seperately. For .onnx models, the backbone and classifier are combined before being saved.
 ## Online Training on STM32 Nucleo-F756ZG
 ### X-CUBE-AI
 MacArm 8.1.0
-### Saved models
-The three datasets' pre-trained models of each fold (leave-one-user-out) formatted in .pt and .onnx are stored under the the directory `saved_models`. For .pt models, backbone and classifier are stored seperately. For .onnx models, the backbone and classifier are combined before being saved.
 ### Work Flow
 <p align="center"><img src="https://github.com/kangpx/onlineTiny2023/assets/118830544/2e0a23cd-2673-4225-b93e-e99a41908b83" width="60%"></p>
 
