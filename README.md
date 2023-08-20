@@ -9,6 +9,9 @@
 - QVAR from PBL
 - Ultra https://github.com/kangpx/40khz-ultrasonicDHGR-onlineSemi
 ## Saved Models
+The model topology is from [1] and shown in the following figure:
+<p align="center"><img width="310" alt="Screenshot 2023-08-20 at 22 27 59" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/ab6f4c5d-2c19-4714-888c-034a19d46240"></p>
+
 The three datasets' pre-trained models of each fold (leave-one-user-out) formatted in .pt and .onnx are stored under the the directory `saved_models`. For .pt models, backbone and classifier are stored seperately. For .onnx models, the backbone and classifier are combined before being saved.
 ## Online Training on STM32 Nucleo-F756ZG
 ### X-CUBE-AI
@@ -46,4 +49,5 @@ This function copies the weights of the classifier into SRAM, registers the call
 > void ot_update(void);
 
 This function updates all the weights and biases of the classifier, which should be called after inference.
-
+## Reference
+- [1] [S. Bian, X. Wang, T. Polonelli and M. Magno, "Exploring Automatic Gym Workouts Recognition Locally on Wearable Resource-Constrained Devices," 2022 IEEE 13th International Green and Sustainable Computing Conference (IGSC), Pittsburgh, PA, USA, 2022, pp. 1-6, doi: 10.1109/IGSC55832.2022.9969370.](https://ieeexplore.ieee.org/abstract/document/9969370)
