@@ -19,7 +19,7 @@ MacArm 8.1.0
  - the gradient is calculated based on &y_t& and the corresponding values in the dense input buffer and output buffer;
 $$\frac{\partial L}{\partial \omega_{s}^{t}} = x^t\left(\frac{e^{\boldsymbol{\omega}_s\cdot \boldsymbol{x}+b_{s}}}{\sum\limits_{i=1}^{C}{e^{\boldsymbol{\omega}_i\cdot\boldsymbol{x}+b_{i}}}}-I_{\{y=s\}}\right)
 =x^t\left(\text{softmax}(\boldsymbol{W}\boldsymbol{x}+\boldsymbol{b})_s-I_{\{y=s\}}\right)$$
-$$\omega_{s}^{t}(\tau+1)=\omega_{s}^{t}(\tau)-\eta\frac{\partial L}{\partial \omega_{s}^{t}}=\omega_{s}^{t}(\tau)-\eta x^t\left(\text{softmax}(\boldsymbol{W}\boldsymbol{x}+\boldsymbol{b})_s-I_{\{y=s\}}\right) $$
+$$\omega_{s}^{t}(\tau+1)=\omega_{s}^{t}(\tau)-\eta\frac{\partial L}{\partial \omega_{s}^{t}}=\omega_{s}^{t}(\tau)-\eta x^t\left(\text{softmax}(\boldsymbol{W}\boldsymbol{x}+\boldsymbol{b})_s-I_{\{y=s\}}\right)$$
 
  - the gradient is used to update the corresponding element in the weight increments buffer, which stores the momentum-based exponential moving average of the gradients;
  - the weight/bias is updated by subtracting the product of the learning rate and the increment;
