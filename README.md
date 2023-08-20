@@ -17,6 +17,7 @@ MacArm 8.1.0
 2. X-CUBE-AI's inference engine performs the inference, during which the input to the last fully connected layer (classifier) is retrieved by a registered callback of platform observer and dumped into the dense input buffer, while the inference output (i.e., the output of the softmax layer) is dumped into the output buffer;
 3. If online training is triggered ($\text{flag}_t$==1) in this round, the implemented online training engine traverses the weights/biases of the classifier, for each weight/bias:
  - the gradient is calculated based on &y_t& and the corresponding values in the dense input buffer and output buffer;
+
 $$\frac{\partial L}{\partial \omega_{s}^{t}} = x^t\left(\frac{e^{\boldsymbol{\omega}_s\cdot \boldsymbol{x}+b_{s}}}{\sum\limits_{i=1}^{C}{e^{\boldsymbol{\omega}_i\cdot\boldsymbol{x}+b_{i}}}}-I_{\{y=s\}}\right)
 =x^t\left(\text{softmax}(\boldsymbol{W}\boldsymbol{x}+\boldsymbol{b})_s-I_{\{y=s\}}\right)$$
 $$\omega_{s}^{t}(\tau+1)=\omega_{s}^{t}(\tau)-\eta\frac{\partial L}{\partial \omega_{s}^{t}}=\omega_{s}^{t}(\tau)-\eta x^t\left(\text{softmax}(\boldsymbol{W}\boldsymbol{x}+\boldsymbol{b})_s-I_{\{y=s\}}\right)$$
