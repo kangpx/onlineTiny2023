@@ -28,7 +28,7 @@ MacArm 8.1.0
  - the weight/bias is updated by subtracting the product of the learning rate and the increment;
  $$\boldsymbol{w}(\tau)\leftarrow\boldsymbol{w}(\tau-1)-\gamma \boldsymbol{i}_w(\tau)$$
  $$\boldsymbol{b}(\tau)\leftarrow\boldsymbol{b}(\tau-1)-\gamma \boldsymbol{i}_b(\tau)$$
-($s$ and $t$ are the group index and the within-group index of the weights, while $\mu$ and $\gamma$ are the momentum and learning rate, respectively.)
+($s$ and $t$ are the group index and the within-group index of the weights, while $\mu$ and $\gamma$ are the momentum and learning rate.)
 4. MCU transmits the predicted label to PC.
 ### STM32 project
 The uploaded project is for ultra dataset. 
