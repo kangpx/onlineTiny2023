@@ -1,8 +1,14 @@
 # onlineTiny2023
  
-## python
+## Python
 3.9.12
-## pytorch
+## PyTorch
 1.12.0
-## x-cube-ai
+## X-CUBE-AI
 MacArm 8.1.0
+## Datasets
+- Gym
+  https://www.kaggle.com/datasets/zhaxidelebsz/10-gym-exercises-with-615-abstracted-features
+- QVAR 
+- Ultra
+  https://github.com/kangpx/40khz-ultrasonicDHGR-onlineSemi
