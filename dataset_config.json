@@ -1,11 +1,14 @@
 {
-    "gym_dataset_path": "/Users/kangpx/onlineTiny2023datasets/Gym_Data.csv",
-    "qvar_dataset_root": "/Users/kangpx/onlineTiny2023datasets/qvar_dataset",
-    "qvar_dataset_start_indices_path": "/Users/kangpx/onlineTiny2023datasets/qvar_dataset/start_indices.json",
-    "qvar_dataset_mean_std_path": "/Users/kangpx/onlineTiny2023datasets/qvar_dataset/mean_std.json",
-    "qvar_dataset_mean_std_nofilter_path": "/Users/kangpx/onlineTiny2023datasets/qvar_dataset/mean_std_nofilter.json",
-    "qvar_dataset_mean_std_kfold_path": "/Users/kangpx/onlineTiny2023datasets/qvar_dataset/mean_std_kfold.json",
-    "qvar_dataset_mean_std_kfold_nofilter_path": "/Users/kangpx/onlineTiny2023datasets/qvar_dataset/mean_std_kfold_nofilter.json",
-    "qvar_dataset_txt_root": "/Users/kangpx/onlineTiny2023datasets/qvar_dataset_txt",
-    "ultra_dataset_root": "/Users/kangpx/onlineTiny2023datasets/ultra_dataset"
+    "gym_incu_dataset_root"                     : "/Users/kangpx/onlineTiny2023datasets/incu_datasets/gym",
+    "qvar_incu_dataset_root"                    : "/Users/kangpx/onlineTiny2023datasets/incu_datasets/qvar",
+    "ultra_incu_dataset_root"                   : "/Users/kangpx/onlineTiny2023datasets/incu_datasets/ultra",
+    "gym_dataset_path"                          : "/Users/kangpx/onlineTiny2023datasets/Gym_Data.csv",
+    "qvar_dataset_root"                         : "/Users/kangpx/onlineTiny2023datasets/qvar_dataset",
+    "qvar_dataset_start_indices_path"           : "/Users/kangpx/onlineTiny2023datasets/qvar_dataset/start_indices.json",
+    "qvar_dataset_mean_std_path"                : "/Users/kangpx/onlineTiny2023datasets/qvar_dataset/mean_std.json",
+    "qvar_dataset_mean_std_nofilter_path"       : "/Users/kangpx/onlineTiny2023datasets/qvar_dataset/mean_std_nofilter.json",
+    "qvar_dataset_mean_std_kfold_path"          : "/Users/kangpx/onlineTiny2023datasets/qvar_dataset/mean_std_kfold.json",
+    "qvar_dataset_mean_std_kfold_nofilter_path" : "/Users/kangpx/onlineTiny2023datasets/qvar_dataset/mean_std_kfold_nofilter.json",
+    "qvar_dataset_txt_root"                     : "/Users/kangpx/onlineTiny2023datasets/qvar_dataset_txt",
+    "ultra_dataset_root"                        : "/Users/kangpx/onlineTiny2023datasets/ultra_dataset"
 }

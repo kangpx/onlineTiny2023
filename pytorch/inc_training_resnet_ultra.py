@@ -1,6 +1,8 @@
+import os
 import datetime
 import pickle as pkl
 import json
+import random
 import numpy as np
 from sklearn.metrics.pairwise import normalize
 import torch
@@ -29,9 +31,20 @@ def get_dataloader(fold, include_incnu=True):
     ultra_dataset_root = dataset_config["ultra_dataset_root"]
     x_train, y_train, x_test, y_test = Xy_TrainTest(ultra_dataset_root, fold)
     x_test, x_incu, y_test, y_incu = train_test_split(x_test, y_test, train_size=0.6, random_state=136+fold, stratify=None)
+
+    incu_indices = list(range(y_incu.shape[0]))
+    random.Random(10).shuffle(incu_indices)
+    x_incu = x_incu[incu_indices]
+    y_incu = y_incu[incu_indices]
+    np.savez(os.path.join(dataset_config["ultra_incu_dataset_root"], f'fold_{fold}_incu_dataset'), x_incu=x_incu.detach().numpy(), y_incu=y_incu.detach().numpy(), x_test=x_test.detach().numpy(), y_test=y_test.detach().numpy())
+
     x_train, x_valid, y_train, y_valid = train_test_split(x_train, y_train, train_size=0.8, random_state=6507+fold, stratify=None)
     if include_incnu:
         x_valid, x_incnu, y_valid, y_incnu = train_test_split(x_valid, y_valid, test_size=x_incu.shape[0], random_state=6133+fold, stratify=None)
+        incnu_indices = list(range(y_incnu.shape[0]))
+        random.Random(20).shuffle(incnu_indices)
+        x_incnu = x_incnu[incnu_indices]
+        y_incnu = y_incnu[incnu_indices]
 
     train_dataset = TensorDataset(x_train, y_train)
     valid_dataset = TensorDataset(x_valid, y_valid)
@@ -46,24 +59,23 @@ def get_dataloader(fold, include_incnu=True):
     
     train_loader = DataLoader(train_dataset, shuffle=True, batch_size=64, drop_last=False)
     valid_loader = DataLoader(valid_dataset, shuffle=False, batch_size=64, drop_last=False)
-    # torch.manual_seed(0)
     test_loader = DataLoader(test_dataset, shuffle=False, batch_size=64, drop_last=False)
-    incu_loader = DataLoader(incu_dataset, shuffle=True, batch_size=1, drop_last=False)
+    incu_loader = DataLoader(incu_dataset, shuffle=False, batch_size=1, drop_last=False)
     if include_incnu:
-        incnu_loader = DataLoader(incnu_dataset, shuffle=True, batch_size=1, drop_last=False)
+        incnu_loader = DataLoader(incnu_dataset, shuffle=False, batch_size=1, drop_last=False)
     else:
         incnu_loader = None
 
     if include_incnu:
         dataset_summary = pd.DataFrame(index=CLASSES+['total'],
-                                    data={'# train':[(y_train == i_cls).sum().item() for i_cls in range(len(CLASSES))] + [len(train_dataset)],
+                                        data={'# train':[(y_train == i_cls).sum().item() for i_cls in range(len(CLASSES))] + [len(train_dataset)],
                                                 '# valid':[(y_valid == i_cls).sum().item() for i_cls in range(len(CLASSES))] + [len(valid_dataset)],
                                                 '# test':[(y_test == i_cls).sum().item() for i_cls in range(len(CLASSES))] + [len(test_dataset)],
                                                 '# incu':[(y_incu == i_cls).sum().item() for i_cls in range(len(CLASSES))] + [len(incu_dataset)],
                                                 '# incnu':[(y_incnu == i_cls).sum().item() for i_cls in range(len(CLASSES))] + [len(incnu_dataset)],})
     else:
         dataset_summary = pd.DataFrame(index=CLASSES+['total'],
-                                    data={'# train':[(y_train == i_cls).sum().item() for i_cls in range(len(CLASSES))] + [len(train_dataset)],
+                                        data={'# train':[(y_train == i_cls).sum().item() for i_cls in range(len(CLASSES))] + [len(train_dataset)],
                                                 '# valid':[(y_valid == i_cls).sum().item() for i_cls in range(len(CLASSES))] + [len(valid_dataset)],
                                                 '# test':[(y_test == i_cls).sum().item() for i_cls in range(len(CLASSES))] + [len(test_dataset)],
                                                 '# incu':[(y_incu == i_cls).sum().item() for i_cls in range(len(CLASSES))] + [len(incu_dataset)],
@@ -383,7 +395,7 @@ def main():
         #--------------------------------------------------------------------#
         #                            pre-training                            #
         #--------------------------------------------------------------------#
-        (backbone, classifier), _ = pre_train(train_loader, valid_loader, bb_pre_path, clf_pre_path, his_pre_path, class_weights)
+        # (backbone, classifier), _ = pre_train(train_loader, valid_loader, bb_pre_path, clf_pre_path, his_pre_path, class_weights)
 
         #--------------------------------------------------------------------#
         #                      testing of pre-training                       #
@@ -394,22 +406,22 @@ def main():
         #--------------------------------------------------------------------#
         #               converting pre-training models to onnx               #
         #--------------------------------------------------------------------#
-        backbone, classifier = load_model(bb_pre_path, clf_pre_path)
-        backbone.eval()
-        classifier.eval()
-        combination = ResNet(backbone=backbone, classifier=classifier).to(device)
-        dummy_input_backbone = torch.randn(1, 45, 19).to(device)
-        torch.onnx.export(combination,
-                          dummy_input_backbone,
-                          cmb_pre_onnx_path,
-                          export_params=True,
-                          opset_version=13,
-                          do_constant_folding=True,
-                          input_names=['modelInput'],
-                          output_names=['modelOutput'],
-                          dynamic_axes={'modelInput': {0: 'batch_size'}, 'modelOutput': {0: 'batch_size'}}
-                          )
-        print(f'combination has been converted to onnx and stored in {cmb_pre_onnx_path}')
+        # backbone, classifier = load_model(bb_pre_path, clf_pre_path)
+        # backbone.eval()
+        # classifier.eval()
+        # combination = ResNet(backbone=backbone, classifier=classifier).to(device)
+        # dummy_input_backbone = torch.randn(1, 45, 19).to(device)
+        # torch.onnx.export(combination,
+        #                   dummy_input_backbone,
+        #                   cmb_pre_onnx_path,
+        #                   export_params=True,
+        #                   opset_version=13,
+        #                   do_constant_folding=True,
+        #                   input_names=['modelInput'],
+        #                   output_names=['modelOutput'],
+        #                   dynamic_axes={'modelInput': {0: 'batch_size'}, 'modelOutput': {0: 'batch_size'}}
+        #                   )
+        # print(f'combination has been converted to onnx and stored in {cmb_pre_onnx_path}')
 
         #--------------------------------------------------------------------#
         #                         inc-training-user                          #
