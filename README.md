@@ -37,8 +37,8 @@ MacArm 8.1.0
 The uploaded project is for ultra dataset. 
 #### Online Training Engine
 Source code of the engine can be found in 
-- `onlineTiny2023/stm32_nucleo_f756zg/nucleo-f756zg-ai_ultra/Core/Inc/online_training.h`
-- `onlineTiny2023/stm32_nucleo_f756zg/nucleo-f756zg-ai_ultra/Core/Src/online_training.c`
+- `stm32_nucleo_f756zg/nucleo-f756zg-ai_ultra_2/Core/Inc/online_training.h`
+- `stm32_nucleo_f756zg/nucleo-f756zg-ai_ultra_2/Core/Src/online_training.c`
 
 The APIs include:
 - ot_init()
