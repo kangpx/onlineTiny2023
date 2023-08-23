@@ -34,12 +34,12 @@ MacArm 8.1.0
 ($s$ and $t$ are the group index and the within-group index of the weights, while $\mu$ and $\gamma$ are the momentum and learning rate)
 4. MCU transmits the predicted label to PC.
 ### STM32 Project
-The uploaded project is for ultra dataset. 
+The STM32 project for each of the three datasets can be found under `stm32_nucleo_f756zg` directory.
 #### Online Training Engine
 Source code of the engine can be found in 
-- `stm32_nucleo_f756zg/nucleo-f756zg-ai_ultra_2/Core/Inc/online_training.h`
-- `stm32_nucleo_f756zg/nucleo-f756zg-ai_ultra_2/Core/Src/online_training.c`
-
+- `stm32_nucleo_f756zg/nucleo-f756zg-ai_xxx/Core/Inc/online_training.h`
+- `stm32_nucleo_f756zg/nucleo-f756zg-ai_xxx/Core/Src/online_training.c`
+The differences of these files between projects of different datasts is that 
 The APIs include:
 - ot_init()
 > void ot_init(float ot_lr_, float ot_momentum_);
