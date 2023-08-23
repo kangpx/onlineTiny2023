@@ -5,6 +5,7 @@ import pickle
 import serial
 import struct
 import random
+import argparse
 import numpy as np
 from tqdm import tqdm
 from sklearn.metrics import accuracy_score
@@ -51,14 +52,18 @@ def trial(ser, x, y, inc_flag):
         # while (data := ser.readline()):
         #     print(str(data.decode('utf-8')))
 
-        label = ser.read(1)
+        label = ser.read(4)
         if label:
-            y_preds.append(int(label.decode('utf-8')))
+            y_preds.append(struct.unpack('I', label))
     return y_preds
 
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--fold', type=int, default=1)
+    args = parser.parse_args()
+
     #--------------------------------------------------------------------#
     #                     instantiate serial object                      #
     #--------------------------------------------------------------------#
@@ -67,7 +72,8 @@ def main():
     #--------------------------------------------------------------------#
     #                             load file                              #
     #--------------------------------------------------------------------#
-    fold = 6
+    fold = args.fold
+    print(f'fold: {fold}')
 
     dataset_path = os.path.join(dataset_config["ultra_incu_dataset_root"], f'fold_{fold}_incu_dataset.npz')
 
@@ -80,7 +86,8 @@ def main():
     #--------------------------------------------------------------------#
     y_pred_test_pre = trial(ser, x_test, y_test, False)
     print(f'pre accuracy: {accuracy_score(y_test.tolist(), y_pred_test_pre)}')
-    _ = trial(ser, x_incu, y_incu, True) 
+    for epoch in range(1):
+        _ = trial(ser, x_incu, y_incu, True) 
     y_pred_test_incu = trial(ser, x_test, y_test, False)
     print(f'inc accuracy: {accuracy_score(y_test.tolist(), y_pred_test_incu)}')
 

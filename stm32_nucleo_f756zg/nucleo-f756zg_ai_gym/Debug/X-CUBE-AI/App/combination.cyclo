@@ -1,0 +1,13 @@
+../X-CUBE-AI/App/combination.c:1117:9:combination_configure_activations	2
+../X-CUBE-AI/App/combination.c:1213:9:combination_configure_weights	2
+../X-CUBE-AI/App/combination.c:1321:9:ai_combination_get_info	4
+../X-CUBE-AI/App/combination.c:1367:9:ai_combination_get_report	4
+../X-CUBE-AI/App/combination.c:1413:10:ai_combination_get_error	1
+../X-CUBE-AI/App/combination.c:1419:10:ai_combination_create	1
+../X-CUBE-AI/App/combination.c:1429:10:ai_combination_create_and_init	8
+../X-CUBE-AI/App/combination.c:1463:12:ai_combination_inputs_get	2
+../X-CUBE-AI/App/combination.c:1473:12:ai_combination_outputs_get	2
+../X-CUBE-AI/App/combination.c:1483:11:ai_combination_destroy	1
+../X-CUBE-AI/App/combination.c:1489:9:ai_combination_init	2
+../X-CUBE-AI/App/combination.c:1506:8:ai_combination_run	1
+../X-CUBE-AI/App/combination.c:1513:8:ai_combination_forward	1
