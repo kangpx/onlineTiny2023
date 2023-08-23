@@ -59,7 +59,8 @@ lr=0.002, momentum=0.9, 1 epoch of online training using user samples.
 
 ### QVAR Dataset
 lr=0.002, momentum=0.5, 5 epoches of online training using user samples.
-<p align="center"><img width="863" alt="Screenshot 2023-08-23 at 19 59 18" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/b67c4b94-19bf-45d6-bbac-fed106e814fa"></p>
+<p align="center"><img width="863" alt="Screenshot 2023-08-23 at 20 27 15" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/077569be-8c37-4887-893c-585bc67d0032"></p>
+
 
 ### Ultra Dataset
 lr=0.002, momentum=0.5, 1 epoch of online training using user samples.
