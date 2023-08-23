@@ -50,7 +50,17 @@ This function copies the weights of the classifier into SRAM, registers the call
 
 This function updates all the weights and biases of the classifier, which should be called after inference.
 ## Performance Comparison
+Random seed is used to ensure that both the dataset splitting and the input order of the online training data are the same for the on-MCU method and the PyTorch-based method. The following shows the results of online training when the valid-online training (nonuser) splitting is **not** applied, which means that full validation datasets are used during offline trainings.
+### Gym Dataset
+lr=0.002, momentum=0.9, 1 epoch of online training using user samples.
+<p align="center"><img width="863" alt="Screenshot 2023-08-23 at 19 58 17" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/e41b74af-2212-4159-9569-d79270648dd5"></p>
+
+### QVAR Dataset
+lr=0.002, momentum=0.5, 5 epoches of online training using user samples.
+<p align="center"><img width="863" alt="Screenshot 2023-08-23 at 19 59 18" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/b67c4b94-19bf-45d6-bbac-fed106e814fa"></p>
+
 ### Ultra Dataset
+lr=0.002, momentum=0.5, 1 epoch of online training using user samples.
 <p align="center"><img width="847" alt="Screenshot 2023-08-22 at 21 55 58" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/2be303bc-6cd8-48c8-b6cb-9e4c71a786ed"></p>
 
 ## Reference
