@@ -41,7 +41,8 @@ Source code of the engine can be found in
 - `stm32_nucleo_f756zg/nucleo-f756zg-ai_xxx/Core/Src/online_training.c`
 
 The macro definitions for `OT_CLASSIFIER_IN_SIZE` and `OT_CLASSIFIER_OUT_SIZE` are different in the three projects, as the size of the samples and the number of classes to be classified are different in the three datasests.
-The APIs include:
+
+APIs:
 - ot_init()
 > void ot_init(float ot_lr_, float ot_momentum_);
 
