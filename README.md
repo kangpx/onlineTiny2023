@@ -26,10 +26,12 @@ foldwise:
 
 ### QVAR Dataset
 classwise:
+![classwise_qvar_partvalid](https://github.com/kangpx/onlineTiny2023/assets/118830544/e0bc2537-21b5-4968-814c-6e4d48217ce5)
 
 
 
 foldwise:
+![foldwise_qvar_partvalid](https://github.com/kangpx/onlineTiny2023/assets/118830544/d13ed600-6e63-45ff-8d17-97265ba1743a)
 
 
 
