@@ -145,7 +145,9 @@ where `tensors` is the directory designated in the NNTool script to store the te
 
 4. Run AutoTiler to generate executable network on GAP9:
 >make clean
+
 >make GenUltra
+
 >./GenUltra
 
 5. Compile and run the code on GVSOC.
