@@ -67,6 +67,7 @@ lr=0.002, momentum=0.5, 1 epoch of online training using user samples.
 <p align="center"><img width="847" alt="Screenshot 2023-08-22 at 21 55 58" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/2be303bc-6cd8-48c8-b6cb-9e4c71a786ed"></p>
 
 ## Online Training on GAP9
+<p align="center"><img width="677" alt="ot_on_gap9" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/93ca3f87-3fc4-4f4e-9495-4ffb69de4c11"></p>
 
 ### Performance Evaluation
 #### Ultra Dataset
