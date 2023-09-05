@@ -67,11 +67,38 @@ lr=0.002, momentum=0.5, 1 epoch of online training using user samples.
 <p align="center"><img width="847" alt="Screenshot 2023-08-22 at 21 55 58" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/2be303bc-6cd8-48c8-b6cb-9e4c71a786ed"></p>
 
 ## Online Training on GAP9
+### Work Flow
 <p align="center"><img width="677" alt="ot_on_gap9" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/93ca3f87-3fc4-4f4e-9495-4ffb69de4c11"></p>
+The work flow is quite similar to that on STM32, except that:
+
+1. The triplet is transferred to GVSOC through bridge funtion that reads files from host PC;
+2. The newly introduced buffers for online-training should be first transferred from L2- to L1-Memory through DMA before the clusters could process the update, and that the updated buffers should be transferred back to L2-Memory after the process;
+3. Instead of allocating an independent place for the dense input buffer as in the STM32 projects, the dense input buffer is part of the activation buffer in L2-Memory;
+4. Input and output buffers are independently allocated instead of being part of the activation buffer as in the STM32 projects.
+
+### Project
+The project for ultra dataset is uploaded (`gap9/ultra`).
+To run the project:
+1. Setup necessary environments:
+ >cd xxx/gap_sdk_private-master && source sourceme.sh && conda activate gap
+2. Run NNTool script to generate ATmodel, which should generate the file `UltraModel.c`:
+ >python nntool_script_ultra.py --mode=generate_at_model --trained_model PRE_TRAINED_MODEL_PATH
+3. Fix some bugs in `UltraModel.c`: add `tensors/` as prefix to each path to the tensor files, e.g., at line 135:
+ change `...ConstInfo("Conv_0_weights.tensor", 1, ...` to `...ConstInfo("tensors/Conv_0_weights.tensor", 1, ...`
+
+where `tensors` is the directory designated in the NNTool script to store the tensors, it is ignored in the generated ATModel due to some unknown reason.
+
+4. Run AutoTiler to generate executable network on GAP9:
+>make clean
+>make GenUltra
+>./GenUltra
+
+5. Compile and run the code on GVSOC.
+>make all run platform=gvsoc
 
 ### Performance Evaluation
 #### Ultra Dataset
-lr=0.002, momentum=0.5, 1 epoch of online training using user samples, full validation during pre-training.
+lr=0.002, momentum=0.5, 1 epoch of online training using user samples, full validation during pre-training. Note that fold-2 and fold-3 report the performance of the re-generated pre-trained models(`saved_models/ultra/onnx/fold_2_pre_combination_fullvalid_x.onnx` and `saved_models/ultra/onnx/fold_3_pre_combination_fullvalid_x.onnx`), and there are meltdowns associated with the old ones (`saved_models/ultra/onnx/fold_2_pre_combination_fullvalid.onnx` and `saved_models/ultra/onnx/fold_3_pre_combination_fullvalid.onnx`).
 <p align="center"><img width="871" alt="Screenshot 2023-09-05 at 10 10 38" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/6f29c22d-5c83-45aa-81b5-bd8407e3489e"></p>
 lr=0.002, momentum=0.5, 1 epoch of online training using user samples, part validation during pre-training.
 <p align="center"><img width="869" alt="Screenshot 2023-09-05 at 10 12 11" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/ada79700-6b8d-4615-9cff-b04538e90e2e"></p>
