@@ -78,6 +78,13 @@ The work flow is quite similar to that on STM32, except that:
 
 ### Project
 The project for ultra dataset is uploaded (`gap9/ultra`).
+
+#### Online Training Engine
+Source code of the engine can be found in 
+- `gap9/ultra/online_training.h`
+- `gap9/ultra/online_training.c`
+
+#### Run the Project
 To run the project:
 1. Setup necessary environments:
  >cd xxx/gap_sdk_private-master && source sourceme.sh && conda activate gap
