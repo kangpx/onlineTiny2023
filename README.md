@@ -84,6 +84,22 @@ Source code of the engine can be found in
 - `gap9/ultra/online_training.h`
 - `gap9/ultra/online_training.c`
 
+APIs:
+- ot_init()
+> void ot_init(void);
+
+This function allocates a piece of dynamic L1-memory for online training, initilizes the buffer pointers and resets the w/b increment cache to all zeros. This funtion should be called after the network initialization and before online training.
+
+- ot_update()
+> void ot_update(void);
+
+This function manages the transfer of the needed buffers between L2- and L1 memory and updates the weights/biases of the classifier. This function should be called after `ot_init()`.
+
+- ot_clean()
+> void ot_clean(void);
+
+This function frees the dynamic L1-memory allocated in `ot_init()`.
+ 
 #### Run the Project
 To run the project:
 1. Setup necessary environments:
