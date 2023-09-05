@@ -8,6 +8,8 @@
 - Gym https://www.kaggle.com/datasets/zhaxidelebsz/10-gym-exercises-with-615-abstracted-features
 - QVAR from PBL
 - Ultra https://github.com/kangpx/40khz-ultrasonicDHGR-onlineSemi
+
+For convenience, the datasets can be accessed by downloading this zip file:) https://drive.google.com/file/d/1I9WCNklWV-WQoGdczSDc6fP-PqAUBiJB/view?usp=sharing
 ## Saved Models
 The model topology is from [1] and shown in the following figure:
 <p align="center"><img width="310" alt="Screenshot 2023-08-20 at 22 27 59" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/ab6f4c5d-2c19-4714-888c-034a19d46240"></p>
