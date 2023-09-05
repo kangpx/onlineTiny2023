@@ -13,6 +13,36 @@ The model topology is from [1] and shown in the following figure:
 <p align="center"><img width="310" alt="Screenshot 2023-08-20 at 22 27 59" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/ab6f4c5d-2c19-4714-888c-034a19d46240"></p>
 
 The three datasets' pre-trained models of each fold (leave-one-user-out) formatted in .pt and .onnx are stored under the the directory `saved_models`. For .pt models, backbone and classifier are stored seperately. For .onnx models, the backbone and classifier are combined before being saved.
+## Online Training using PyTorch
+### Gym Dataset
+classwise:
+![classwise_gym_partvalid](https://github.com/kangpx/onlineTiny2023/assets/118830544/4ce74734-be43-4682-97e1-79f252993459)
+
+
+foldwise:
+![foldwise_gym_partvalid](https://github.com/kangpx/onlineTiny2023/assets/118830544/2e5b97b7-38ef-4b8d-9401-d3c66558491f)
+
+
+
+### QVAR Dataset
+classwise:
+
+
+
+foldwise:
+
+
+
+### Ultra Dataset
+classwise:
+![classwise_ultrasonic_partvalid](https://github.com/kangpx/onlineTiny2023/assets/118830544/4d1a5eb7-eb81-41cc-8bb8-6bf964d112ce)
+
+
+foldwise:
+![foldwise_ultrasonic_partvalid](https://github.com/kangpx/onlineTiny2023/assets/118830544/b4bdee0e-5591-44f4-881b-d68377b85f97)
+
+
+
 ## Online Training on STM32 Nucleo-F756ZG
 ### X-CUBE-AI
 MacArm 8.1.0
