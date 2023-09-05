@@ -51,20 +51,29 @@ This function copies the weights of the classifier into SRAM, registers the call
 > void ot_update(void);
 
 This function updates all the weights and biases of the classifier, which should be called after inference.
-## Performance Comparison
+### Performance Evaluation
 Random seed is used to ensure that both the dataset splitting and the input order of the online training data are the same for the on-MCU method and the PyTorch-based method. The following shows the results of online training when the valid-online training (nonuser) splitting is **not** applied, which means that full validation datasets are used during offline trainings.
-### Gym Dataset
+#### Gym Dataset
 lr=0.002, momentum=0.9, 1 epoch of online training using user samples.
 <p align="center"><img width="863" alt="Screenshot 2023-08-23 at 19 58 17" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/e41b74af-2212-4159-9569-d79270648dd5"></p>
 
-### QVAR Dataset
+#### QVAR Dataset
 lr=0.002, momentum=0.5, 5 epoches of online training using user samples.
 <p align="center"><img width="863" alt="Screenshot 2023-08-23 at 20 27 15" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/077569be-8c37-4887-893c-585bc67d0032"></p>
 
 
-### Ultra Dataset
+#### Ultra Dataset
 lr=0.002, momentum=0.5, 1 epoch of online training using user samples.
 <p align="center"><img width="847" alt="Screenshot 2023-08-22 at 21 55 58" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/2be303bc-6cd8-48c8-b6cb-9e4c71a786ed"></p>
+
+## Online Training on GAP9
+
+### Performance Evaluation
+#### Ultra Dataset
+lr=0.002, momentum=0.5, 1 epoch of online training using user samples, full validation during pre-training.
+<p align="center"><img width="871" alt="Screenshot 2023-09-05 at 10 10 38" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/6f29c22d-5c83-45aa-81b5-bd8407e3489e"></p>
+lr=0.002, momentum=0.5, 1 epoch of online training using user samples, part validation during pre-training.
+<p align="center"><img width="869" alt="Screenshot 2023-09-05 at 10 12 11" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/ada79700-6b8d-4615-9cff-b04538e90e2e"></p>
 
 ## Reference
 - [1] [S. Bian, X. Wang, T. Polonelli and M. Magno, "Exploring Automatic Gym Workouts Recognition Locally on Wearable Resource-Constrained Devices," 2022 IEEE 13th International Green and Sustainable Computing Conference (IGSC), Pittsburgh, PA, USA, 2022, pp. 1-6, doi: 10.1109/IGSC55832.2022.9969370.](https://ieeexplore.ieee.org/abstract/document/9969370)
