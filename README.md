@@ -13,6 +13,38 @@ The model topology is from [1] and shown in the following figure:
 <p align="center"><img width="310" alt="Screenshot 2023-08-20 at 22 27 59" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/ab6f4c5d-2c19-4714-888c-034a19d46240"></p>
 
 The three datasets' pre-trained models of each fold (leave-one-user-out) formatted in .pt and .onnx are stored under the the directory `saved_models`. For .pt models, backbone and classifier are stored seperately. For .onnx models, the backbone and classifier are combined before being saved.
+## Online Training using PyTorch
+### Gym Dataset
+classwise:
+![classwise_gym_partvalid](https://github.com/kangpx/onlineTiny2023/assets/118830544/4ce74734-be43-4682-97e1-79f252993459)
+
+
+foldwise:
+![foldwise_gym_partvalid](https://github.com/kangpx/onlineTiny2023/assets/118830544/2e5b97b7-38ef-4b8d-9401-d3c66558491f)
+
+
+
+### QVAR Dataset
+classwise:
+![classwise_qvar_partvalid](https://github.com/kangpx/onlineTiny2023/assets/118830544/e0bc2537-21b5-4968-814c-6e4d48217ce5)
+
+
+
+foldwise:
+![foldwise_qvar_partvalid](https://github.com/kangpx/onlineTiny2023/assets/118830544/d13ed600-6e63-45ff-8d17-97265ba1743a)
+
+
+
+### Ultra Dataset
+classwise:
+![classwise_ultrasonic_partvalid](https://github.com/kangpx/onlineTiny2023/assets/118830544/4d1a5eb7-eb81-41cc-8bb8-6bf964d112ce)
+
+
+foldwise:
+![foldwise_ultrasonic_partvalid](https://github.com/kangpx/onlineTiny2023/assets/118830544/b4bdee0e-5591-44f4-881b-d68377b85f97)
+
+
+
 ## Online Training on STM32 Nucleo-F756ZG
 ### X-CUBE-AI
 MacArm 8.1.0
@@ -78,6 +110,29 @@ The work flow is quite similar to that on STM32, except that:
 
 ### Project
 The project for ultra dataset is uploaded (`gap9/ultra`).
+
+#### Online Training Engine
+Source code of the engine can be found in 
+- `gap9/ultra/online_training.h`
+- `gap9/ultra/online_training.c`
+
+APIs:
+- ot_init()
+> void ot_init(void);
+
+This function allocates a piece of dynamic L1-memory for online training, initilizes the buffer pointers and resets the w/b increment cache to all zeros. This funtion should be called after the network initialization and before online training.
+
+- ot_update()
+> void ot_update(void);
+
+This function manages the transfer of the needed buffers between L2- and L1 memory and updates the weights/biases of the classifier. This function should be called after `ot_init()`.
+
+- ot_clean()
+> void ot_clean(void);
+
+This function frees the dynamic L1-memory allocated in `ot_init()`.
+ 
+#### Run the Project
 To run the project:
 1. Setup necessary environments:
  >cd xxx/gap_sdk_private-master && source sourceme.sh && conda activate gap
