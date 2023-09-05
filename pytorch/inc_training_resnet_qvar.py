@@ -431,7 +431,7 @@ def main():
     foldlog_classwise_incu = []
     foldlog_classwise_incnu = []
 
-    include_incnu = False
+    include_incnu = True
     
     for fold in tqdm(range(1, 21)):
         bb_pre_path       = f'../saved_models/qvar/pt/fold_{fold}_pre_backbone_{"fullvalid" if not include_incnu else "partvalid"}.pt'
@@ -451,7 +451,7 @@ def main():
         #--------------------------------------------------------------------#
         #                            pre-training                            #
         #--------------------------------------------------------------------#
-        # (backbone, classifier), _ = pre_train(train_loader, valid_loader, bb_pre_path, clf_pre_path, his_pre_path, class_weights)
+        (backbone, classifier), _ = pre_train(train_loader, valid_loader, bb_pre_path, clf_pre_path, his_pre_path, class_weights)
 
         #--------------------------------------------------------------------#
         #                      testing of pre-training                       #
@@ -468,42 +468,18 @@ def main():
         combination = ResNet(backbone=backbone, classifier=classifier).to(device)
         dummy_input_backbone = torch.randn(1, len(SENSING_DIMENSIONS), 40).to(device)
 
-        # dummy_input_classifier = torch.randn(1, 64*40).to(device)
-        # torch.onnx.export(backbone,
-        #                   dummy_input_backbone,
-        #                   bb_pre_onnx_path,
-        #                   export_params=True,
-        #                   opset_version=13,
-        #                   do_constant_folding=True,
-        #                   input_names=['modelInput'],
-        #                   output_names=['modelOutput'],
-        #                   dynamic_axes={'modelInput': {0: 'batch_size'}, 'modelOutput': {0: 'batch_size'}}
-        #                   )
-        # print(f'backbone has been converted to onnx and stored in {bb_pre_onnx_path}')
 
-        # torch.onnx.export(classifier,
-        #                   dummy_input_classifier,
-        #                   clf_pre_onnx_path,
-        #                   export_params=True,
-        #                   opset_version=13,
-        #                   do_constant_folding=True,
-        #                   input_names=['modelInput'],
-        #                   output_names=['modelOutput'],
-        #                   dynamic_axes={'modelInput': {0: 'batch_size'}, 'modelOutput': {0: 'batch_size'}}
-        #                   )
-        # print(f'classifier has been converted to onnx and stored in {clf_pre_onnx_path}')
-
-        # torch.onnx.export(combination,
-        #                   dummy_input_backbone,
-        #                   cmb_pre_onnx_path,
-        #                   export_params=True,
-        #                   opset_version=13,
-        #                   do_constant_folding=True,
-        #                   input_names=['modelInput'],
-        #                   output_names=['modelOutput'],
-        #                   dynamic_axes={'modelInput': {0: 'batch_size'}, 'modelOutput': {0: 'batch_size'}}
-        #                   )
-        # print(f'combination has been converted to onnx and stored in {cmb_pre_onnx_path}')
+        torch.onnx.export(combination,
+                          dummy_input_backbone,
+                          cmb_pre_onnx_path,
+                          export_params=True,
+                          opset_version=13,
+                          do_constant_folding=True,
+                          input_names=['modelInput'],
+                          output_names=['modelOutput'],
+                          dynamic_axes={'modelInput': {0: 'batch_size'}, 'modelOutput': {0: 'batch_size'}}
+                          )
+        print(f'combination has been converted to onnx and stored in {cmb_pre_onnx_path}')
 
         #--------------------------------------------------------------------#
         #                           quantize onnx                            #
@@ -588,6 +564,69 @@ def main():
     print(df_allfolds.round(4))
 
 
+    # # foldwise statistics
+    # fold_labels = [f'fold_{i}' for i in range(1, 21)]
+    # fold_metrics = {
+    #     'accuracy_pre': [foldlog_pre.loc[i, 'accuracy'].round(4) for i in range(20)],
+    #     'accuracy_onl_user': [foldlog_incu.loc[i, 'accuracy'].round(4) for i in range(20)],
+    #     'accuray_onl_nonuser': [foldlog_incnu.loc[i, 'accuracy'].round(4) for i in range(20)],
+    #     'macro_f1_pre': [foldlog_pre.loc[i, 'macro_f1'].round(4) for i in range(20)],
+    #     'macro_f1_onl_user': [foldlog_incu.loc[i, 'macro_f1'].round(4) for i in range(20)],
+    #     'macro_f1_onl_nonuser': [foldlog_incnu.loc[i, 'macro_f1'].round(4) for i in range(20)],
+    # } 
+    #
+    # y = np.array([2*i for i in range(20)])
+    # width = 0.3
+    # multiplier = 0
+    #
+    # fig, ax = plt.subplots(layout='constrained', figsize=(10, 50))
+    #
+    # for attribute, measurement in fold_metrics.items():
+    #     offset = width * multiplier
+    #     rects = ax.barh(y + offset, measurement, width, label=attribute)
+    #     ax.bar_label(rects, padding=2)
+    #     multiplier += 1
+    #
+    # ax.set_yticks(y + 2 * width, fold_labels, fontsize=15)
+    # ax.tick_params(axis='x', labelsize=15)
+    # ax.legend(loc='upper right', ncol=2, fontsize=15)
+    # ax.set_xlim(0, 1)
+    #
+    # plt.savefig(f'../figures/foldwise_qvar_{"fullvalid" if not include_incnu else "partvalid"}.jpg')
+    #
+    # # classwise statistics
+    # class_labels = CLASSES
+    # class_metrics = {
+    #     'precision_pre': [np.round(np.mean([foldlog_classwise_pre[i_fold][0][i_cls] for i_fold in range(20)]), 4) for i_cls in range(10)],
+    #     'precision_onl_user': [np.round(np.mean([foldlog_classwise_incu[i_fold][0][i_cls] for i_fold in range(20)]), 4) for i_cls in range(10)],
+    #     'precision_onl_nonuser': [np.round(np.mean([foldlog_classwise_incnu[i_fold][0][i_cls] for i_fold in range(20)]), 4) for i_cls in range(10)],
+    #     'recall_pre': [np.round(np.mean([foldlog_classwise_pre[i_fold][1][i_cls] for i_fold in range(20)]), 4) for i_cls in range(10)],
+    #     'recall_onl_user': [np.round(np.mean([foldlog_classwise_incu[i_fold][1][i_cls] for i_fold in range(20)]), 4) for i_cls in range(10)],
+    #     'recall_onl_nonuser': [np.round(np.mean([foldlog_classwise_incnu[i_fold][1][i_cls] for i_fold in range(20)]), 4) for i_cls in range(10)],
+    #     'f1_pre': [np.round(np.mean([foldlog_classwise_pre[i_fold][2][i_cls] for i_fold in range(20)]), 4) for i_cls in range(10)],
+    #     'f1_onl_user': [np.round(np.mean([foldlog_classwise_incu[i_fold][2][i_cls] for i_fold in range(20)]), 4) for i_cls in range(10)],
+    #     'f1_onl_nonuser': [np.round(np.mean([foldlog_classwise_incnu[i_fold][2][i_cls] for i_fold in range(20)]), 4) for i_cls in range(10)]
+    # } 
+    #
+    # y = np.array([3*i for i in range(10)])
+    # width = 0.3
+    # multiplier = 0
+    #
+    # fig, ax = plt.subplots(layout='constrained', figsize=(10, 50))
+    #
+    # for attribute, measurement in class_metrics.items():
+    #     offset = width * multiplier
+    #     rects = ax.barh(y + offset, measurement, width, label=attribute)
+    #     ax.bar_label(rects, padding=2)
+    #     multiplier += 1
+    #
+    # ax.set_yticks(y + 4 * width, class_labels, fontsize=15)
+    # ax.tick_params(axis='x', labelsize=15)
+    # ax.legend(loc='upper right', ncol=1, fontsize=15)
+    # ax.set_xlim(0, 1)
+    #
+    # plt.savefig(f'../figures/classwise_qvar_{"fullvalid" if not include_incnu else "partvalid"}.jpg')
+
     # foldwise statistics
     fold_labels = [f'fold_{i}' for i in range(1, 21)]
     fold_metrics = {
@@ -599,22 +638,22 @@ def main():
         'macro_f1_onl_nonuser': [foldlog_incnu.loc[i, 'macro_f1'].round(4) for i in range(20)],
     } 
 
-    y = np.array([2*i for i in range(20)])
+    x = np.array([2*i for i in range(20)])
     width = 0.3
     multiplier = 0
 
-    fig, ax = plt.subplots(layout='constrained', figsize=(10, 50))
+    fig, ax = plt.subplots(layout='constrained', figsize=(50, 10))
 
     for attribute, measurement in fold_metrics.items():
         offset = width * multiplier
-        rects = ax.barh(y + offset, measurement, width, label=attribute)
+        rects = ax.bar(x + offset, measurement, width, label=attribute)
         ax.bar_label(rects, padding=2)
         multiplier += 1
 
-    ax.set_yticks(y + 2 * width, fold_labels, fontsize=15)
-    ax.tick_params(axis='x', labelsize=15)
-    ax.legend(loc='upper right', ncol=2, fontsize=15)
-    ax.set_xlim(0, 1)
+    ax.set_xticks(x + 2 * width, fold_labels, fontsize=15)
+    ax.tick_params(axis='y', labelsize=15)
+    ax.legend(loc='upper left', ncol=2, fontsize=15)
+    ax.set_ylim(0, 1)
 
     plt.savefig(f'../figures/foldwise_qvar_{"fullvalid" if not include_incnu else "partvalid"}.jpg')
 
@@ -632,22 +671,22 @@ def main():
         'f1_onl_nonuser': [np.round(np.mean([foldlog_classwise_incnu[i_fold][2][i_cls] for i_fold in range(20)]), 4) for i_cls in range(10)]
     } 
 
-    y = np.array([3*i for i in range(10)])
+    x = np.array([3*i for i in range(10)])
     width = 0.3
     multiplier = 0
 
-    fig, ax = plt.subplots(layout='constrained', figsize=(10, 50))
+    fig, ax = plt.subplots(layout='constrained', figsize=(50, 10))
 
     for attribute, measurement in class_metrics.items():
         offset = width * multiplier
-        rects = ax.barh(y + offset, measurement, width, label=attribute)
+        rects = ax.bar(x + offset, measurement, width, label=attribute)
         ax.bar_label(rects, padding=2)
         multiplier += 1
 
-    ax.set_yticks(y + 4 * width, class_labels, fontsize=15)
-    ax.tick_params(axis='x', labelsize=15)
-    ax.legend(loc='upper right', ncol=1, fontsize=15)
-    ax.set_xlim(0, 1)
+    ax.set_xticks(x + 4 * width, class_labels, fontsize=15)
+    ax.tick_params(axis='y', labelsize=15)
+    ax.legend(loc='upper left', ncol=1, fontsize=15)
+    ax.set_ylim(0, 1)
 
     plt.savefig(f'../figures/classwise_qvar_{"fullvalid" if not include_incnu else "partvalid"}.jpg')
 
