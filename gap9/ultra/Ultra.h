@@ -19,8 +19,12 @@
 #define STACK_SIZE 1024
 #endif
 
-#define TEST_SAMPLE_DIR "/home/kangpx/onlineTiny2023/datasets/incu_datasets/ultra/c_input/fold_2/test"
-#define INCU_SAMPLE_DIR "/home/kangpx/onlineTiny2023/datasets/incu_datasets/ultra/c_input/fold_2/incu"
+#define FOLD 1
+#define _PATH(prefix, core, suffix) prefix"/fold_"#core"/"suffix
+#define _TEST_SAMPLE_DIR(fold) _PATH("/home/kangpx/onlineTiny2023/datasets/incu_datasets/ultra/c_input", fold, "test")
+#define _INCU_SAMPLE_DIR(fold) _PATH("/home/kangpx/onlineTiny2023/datasets/incu_datasets/ultra/c_input", fold, "incu")
+#define TEST_SAMPLE_DIR _TEST_SAMPLE_DIR(FOLD)
+#define INCU_SAMPLE_DIR _INCU_SAMPLE_DIR(FOLD)
 #define N_TEST_SAMPLE (480)
 #define N_INCU_SAMPLE (320)
 

@@ -20,6 +20,7 @@ READFS_FILES= Ultra_L3_Flash_Const.dat
 PLPBRIDGE_FLAGS += -f 
 io=host
 
+APP_CFLAGS += -DOT_ULTRA
 
 MODEL_FP16 = 1
 include $(RULES_DIR)/at_common_decl.mk

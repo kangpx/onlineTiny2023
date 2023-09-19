@@ -82,7 +82,10 @@ int main(void)
     //------------------------------------------------------------------//
     //                       online training init                       //
     //------------------------------------------------------------------//
-    ot_init();
+    if (ot_init_chunk() < 0){
+        printf("L1 memory init error during ot_init_chunk.\n");
+        pmsis_exit(-6);
+    }
     printf("online training initialized.\n");
 
 
@@ -108,15 +111,16 @@ int main(void)
     //------------------------------------------------------------------//
     //                         online training                          //
     //------------------------------------------------------------------//
-    for (unsigned int sample_idx = 0; sample_idx < N_INCU_SAMPLE; sample_idx++){
-        triplet_init(INCU_SAMPLE_DIR, sample_idx, OT_ENABLE);
+    for (unsigned int epoch=0; epoch < 1; epoch++)     
+        for (unsigned int sample_idx = 0; sample_idx < N_INCU_SAMPLE; sample_idx++){
+            triplet_init(INCU_SAMPLE_DIR, sample_idx, OT_ENABLE);
 
-        pi_cluster_send_task_to_cl(&cluster_dev, pi_cluster_task(&cl_task, inference, &y_pred));
+            pi_cluster_send_task_to_cl(&cluster_dev, pi_cluster_task(&cl_task, inference, &y_pred));
 
-        pi_cluster_send_task_to_cl(&cluster_dev, pi_cluster_task(&cl_task, ot_update, NULL));
+            pi_cluster_send_task_to_cl(&cluster_dev, pi_cluster_task(&cl_task, ot_update_chunk_parallel, NULL));
 
-        printf("INCU--idx = %lu/%lu, y_real/y_pred = %lu/%lu\n", sample_idx+1, N_INCU_SAMPLE, y_real, y_pred);
-    }
+            printf("INCU--epoch=%lu/1, idx = %lu/%lu, y_real/y_pred = %lu/%lu\n", epoch+1, sample_idx+1, N_INCU_SAMPLE, y_real, y_pred);
+        }
 
     //------------------------------------------------------------------//
     //                               test                               //
@@ -151,7 +155,7 @@ int main(void)
     //------------------------------------------------------------------//
     //                      online training clean                       //
     //------------------------------------------------------------------//
-    ot_clean();
+    ot_clean_chunk();
     printf("online training cleaned.\n");
 
     return 0;

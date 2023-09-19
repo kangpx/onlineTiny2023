@@ -65,7 +65,7 @@ def test_accuracy(G, test_data, test_labels, quant_execution):
     correct = 0
     for x, y in tqdm(zip(test_data, test_labels), total=len(test_labels), desc="Testing:"):
         out = G.execute([x], dequantize=quant_execution)
-        correct += int(np.argmax(out[-1][0]) == np.argmax(y))
+        correct += int(np.argmax(out[-1][0]) == y)
     print(f"NNTool accuracy:\t\t{100*correct / len(test_data):.2f}%")
 
 def main():
@@ -120,6 +120,8 @@ def main():
     }
 
     if args.mode == "accuracy":
+        data = np.load(f'/home/kangpx/onlineTiny2023/datasets/incu_datasets/ultra/fold_0_incu_dataset.npz') 
+        x_incu, y_incu, x_test, y_test = data['x_incu'], data['y_incu'], data['x_test'], data['y_test']
         test_accuracy(G, x_test, y_test, True)
     elif args.mode == "performance":
         in_data = np.array(Image.open("test_images/5223_5.pgm")).astype(np.float32) / 128 - 1.0

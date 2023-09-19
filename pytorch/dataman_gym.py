@@ -11,7 +11,6 @@ SLIDING_WINDOW_LENGTH = 40
 SLIDING_WINDOW_STEP = 40 
 
 CLASSES = ['Adductor', 'ArmCurl', 'BenchPress', 'LegCurl', 'LegPress', 'Null', 'Riding', 'RopeSkipping', 'Running', 'Squat', 'StairClimber', 'Walking']
-
 SENSING_DIMENSIONS = ['A_x','A_y','A_z','G_x','G_y','G_z','Body_Capacitance']
 
 # POSITIONS = ['leg', 'pocket', 'wrist']
