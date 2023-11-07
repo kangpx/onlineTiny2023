@@ -102,7 +102,8 @@ lr=0.002, momentum=0.5, 1 epoch of online training using user samples.
 
 ## Online Training on GAP9
 ### Work Flow
-<p align="center"><img width="677" alt="ot_on_gap9" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/93ca3f87-3fc4-4f4e-9495-4ffb69de4c11"></p>
+<p align="center"><img width="645" alt="Screenshot 2023-09-19 at 15 36 38" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/e1d7a862-ea06-4c45-a1ae-9cb1e05c4f53"></p>
+
 The work flow is quite similar to that on STM32, except that:
 
 1. The triplet is transferred to GVSOC through bridge funtion that reads files from host PC;
@@ -111,18 +112,18 @@ The work flow is quite similar to that on STM32, except that:
 4. Input and output buffers are independently allocated instead of being part of the activation buffer as in the STM32 projects.
 
 ### Project
-The project for ultra dataset is uploaded (`gap9/ultra`).
+The three datasets' projects are uploaded and can be found under (`gap9`).
 
 #### Online Training Engine
 Source code of the engine can be found in 
-- `gap9/ultra/online_training.h`
-- `gap9/ultra/online_training.c`
+- `gap9/xxx/online_training.h`
+- `gap9/xxx/online_training.c`
 
 APIs:
 - ot_init()
-> void ot_init(void);
+> int ot_init(void);
 
-This function allocates a piece of dynamic L1-memory for online training, initilizes the buffer pointers and resets the w/b increment cache to all zeros. This funtion should be called after the network initialization and before online training.
+This function allocates a piece of dynamic L1-memory for online training, initilizes the buffer pointers and resets the w/b increment cache to all zeros. Returns -1 if failed to allocate L1-memory otherwise 0. This funtion should be called after the network initialization and before online training.
 
 - ot_update()
 > void ot_update(void);
@@ -133,9 +134,24 @@ This function manages the transfer of the needed buffers between L2- and L1 memo
 > void ot_clean(void);
 
 This function frees the dynamic L1-memory allocated in `ot_init()`.
- 
+
+- ot_init_chunk()
+> int ot_init_chunk(void);
+
+Init funtion for the case where the w/b icrement caches & output buffers are transferred between L2- and L1-memory and updated in chunks (Default NUM_CHUNK for gym, qvar, ultra datasets are 2, 1, 1).
+
+- ot_update_chunk()
+> void ot_update_chunk(void);
+
+Update funtion for the case where the w/b icrement caches & output buffers are transferred between L2- and L1-memory and updated in chunks.
+
+- ot_update_chunk_parallel()
+> void ot_update_chunk(void);
+
+Update funtion for the case where multi-clusters are used and the w/b icrement caches & output buffers are transferred between L2- and L1-memory and updated in chunks.
+
 #### Run the Project
-To run the project:
+To run the project (taking ultra project as example):
 1. Setup necessary environments:
  >cd xxx/gap_sdk_private-master && source sourceme.sh && conda activate gap
 2. Run NNTool script to generate ATmodel, which should generate the file `UltraModel.c`:
@@ -157,10 +173,21 @@ where `tensors` is the directory designated in the NNTool script to store the te
 
 ### Performance Evaluation
 #### Ultra Dataset
-lr=0.002, momentum=0.5, 1 epoch of online training using user samples, full validation during pre-training. Note that fold-2 and fold-3 report the performance of the re-generated pre-trained models(`saved_models/ultra/onnx/fold_2_pre_combination_fullvalid_x.onnx` and `saved_models/ultra/onnx/fold_3_pre_combination_fullvalid_x.onnx`), and there are meltdowns associated with the old ones (`saved_models/ultra/onnx/fold_2_pre_combination_fullvalid.onnx` and `saved_models/ultra/onnx/fold_3_pre_combination_fullvalid.onnx`).
-<p align="center"><img width="871" alt="Screenshot 2023-09-05 at 10 10 38" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/6f29c22d-5c83-45aa-81b5-bd8407e3489e"></p>
-lr=0.002, momentum=0.5, 1 epoch of online training using user samples, part validation during pre-training.
-<p align="center"><img width="869" alt="Screenshot 2023-09-05 at 10 12 11" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/ada79700-6b8d-4615-9cff-b04538e90e2e"></p>
+lr=0.002, momentum=0.5, 1 epoch of online training using user samples, full validation during pre-training. 
+
+fastexp with underflow check:
+<p align="center"><img width="840" alt="Screenshot 2023-09-19 at 16 00 12" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/dac50123-085d-4846-a800-44af74867c09"></p>
+
+#### Qvar Dataset
+lr=0.002, momentum=0.5, 5 epoches of online training using user samples, full validation during pre-training.
+
+fastexp with underflow check:
+<p align="center"><img width="851" alt="Screenshot 2023-09-19 at 16 00 51" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/ddcf9150-6dc0-4c6f-9d0a-a76600e4c6bd"></p>
+
+fasterexp:
+<p align="center"><img width="852" alt="Screenshot 2023-09-19 at 16 02 17" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/adc66236-c348-4163-976c-d5827e6054db"></p>
+
+
 
 ## Reference
 - [1] [S. Bian, X. Wang, T. Polonelli and M. Magno, "Exploring Automatic Gym Workouts Recognition Locally on Wearable Resource-Constrained Devices," 2022 IEEE 13th International Green and Sustainable Computing Conference (IGSC), Pittsburgh, PA, USA, 2022, pp. 1-6, doi: 10.1109/IGSC55832.2022.9969370.](https://ieeexplore.ieee.org/abstract/document/9969370)
