@@ -58,7 +58,7 @@ int main(void)
     pi_cluster_conf_init(&cl_conf);
     cl_conf.id = 0;
     cl_conf.cc_stack_size = STACK_SIZE;
-    // cl_conf.icache_conf = PI_CLUSTER_MASTER_CORE_ICACHE_ENABLE | PI_CLUSTER_ICACHE_PREFETCH_ENABLE | PI_CLUSTER_ICACHE_ENABLE;
+    //cl_conf.icache_conf = PI_CLUSTER_MASTER_CORE_ICACHE_ENABLE | PI_CLUSTER_ICACHE_PREFETCH_ENABLE | PI_CLUSTER_ICACHE_ENABLE;
 
     pi_open_from_conf(&cluster_dev, (void *) &cl_conf);
     if (pi_cluster_open(&cluster_dev))
@@ -88,7 +88,6 @@ int main(void)
     }
     printf("online training initialized.\n");
 
-
     // ------------------------------------------------------------------//
     //                               test                               //
     // ------------------------------------------------------------------//
@@ -106,8 +105,6 @@ int main(void)
         printf("TEST--idx = %lu/%lu, y_real/y_pred = %lu/%lu, accuracy=%f\n", sample_idx+1, N_TEST_SAMPLE, y_real, y_pred, accuracy_score(sample_idx+1));
     }
     printf("Accuracy: %f\n", accuracy_score(N_TEST_SAMPLE));
-    
-
 
     //------------------------------------------------------------------//
     //                         online training                          //
@@ -238,3 +235,4 @@ static float accuracy_score(unsigned int n_sample)
             correct_cnt += 1;
     return ((float)correct_cnt) / ((float)n_sample);
 }
+

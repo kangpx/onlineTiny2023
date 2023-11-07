@@ -53,10 +53,16 @@ def get_dataloader(fold, include_incnu=True):
     else:
         incnu_dataset = None
 
-    train_class_weights = torch.tensor(CLASS_WEIGHTS)
+    # train_class_weights = torch.tensor(CLASS_WEIGHTS)
+    train_class_n_samples = [(y_train == i).sum().item() for i in range(len(CLASSES))]
+    train_class_weights = [1.0 / n_sample for n_sample in train_class_n_samples]
+    sample_weights = [train_class_weights[y.item()] for y in y_train]
+    sampler = WeightedRandomSampler(sample_weights, len(sample_weights), replacement=True)
+    train_class_weights = torch.tensor(train_class_weights)
 
 
-    train_loader = DataLoader(train_dataset, shuffle=True, batch_size=64, drop_last=False)
+    # train_loader = DataLoader(train_dataset, shuffle=True, batch_size=64, drop_last=False)
+    train_loader = DataLoader(train_dataset, batch_size=64, drop_last=False, sampler=sampler)
     valid_loader = DataLoader(valid_dataset, shuffle=False, batch_size=64, drop_last=False)
     test_loader = DataLoader(test_dataset, shuffle=False, batch_size=64, drop_last=False)
     incu_loader = DataLoader(incu_dataset, shuffle=False, batch_size=1, drop_last=False)
@@ -372,15 +378,15 @@ def main():
 
     include_incnu = False
 
-    for fold in range(1, 11):
-        bb_pre_path       = f'../saved_models/gym/pt/fold_{fold}_pre_backbone_{"fullvalid" if not include_incnu else "partvalid"}.pt'
-        clf_pre_path      = f'../saved_models/gym/pt/fold_{fold}_pre_classifier_{"fullvalid" if not include_incnu else "partvalid"}.pt'
-        cmb_pre_onnx_path = f'../saved_models/gym/onnx/fold_{fold}_pre_combination_{"fullvalid" if not include_incnu else "partvalid"}.onnx' 
-        clf_incu_path     = f'../saved_models/gym/pt/fold_{fold}_incu_classifier_{"fullvalid" if not include_incnu else "partvalid"}.pt'
-        clf_incnu_path    = f'../saved_models/gym/pt/fold_{fold}_incnu_classifier_{"fullvalid" if not include_incnu else "partvalid"}.pt'
-        his_pre_path      = f'../histories/gym/fold_{fold}_pre_{"fullvalid" if not include_incnu else "partvalid"}.pkl'
-        his_incu_path     = f'../histories/gym/fold_{fold}_incu_{"fullvalid" if not include_incnu else "partvalid"}.pkl'
-        his_incnu_path    = f'../histories/gym/fold_{fold}_incnu_{"fullvalid" if not include_incnu else "partvalid"}.pkl'
+    for fold in range(1, 2):
+        bb_pre_path       = f'../saved_models/gym/pt/fold_{fold}_pre_backbone_{"fullvalid" if not include_incnu else "partvalid"}_x.pt'
+        clf_pre_path      = f'../saved_models/gym/pt/fold_{fold}_pre_classifier_{"fullvalid" if not include_incnu else "partvalid"}_x.pt'
+        cmb_pre_onnx_path = f'../saved_models/gym/onnx/fold_{fold}_pre_combination_{"fullvalid" if not include_incnu else "partvalid"}_x.onnx' 
+        clf_incu_path     = f'../saved_models/gym/pt/fold_{fold}_incu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_x.pt'
+        clf_incnu_path    = f'../saved_models/gym/pt/fold_{fold}_incnu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_x.pt'
+        his_pre_path      = f'../histories/gym/fold_{fold}_pre_{"fullvalid" if not include_incnu else "partvalid"}_x.pkl'
+        his_incu_path     = f'../histories/gym/fold_{fold}_incu_{"fullvalid" if not include_incnu else "partvalid"}_x.pkl'
+        his_incnu_path    = f'../histories/gym/fold_{fold}_incnu_{"fullvalid" if not include_incnu else "partvalid"}_x.pkl'
 
         #--------------------------------------------------------------------#
         #                          data preparation                          #
@@ -390,7 +396,7 @@ def main():
         #--------------------------------------------------------------------#
         #                            pre-training                            #
         #--------------------------------------------------------------------#
-        # (backbone, classifier), _ = pre_train(train_loader, valid_loader, bb_pre_path, clf_pre_path, his_pre_path, class_weights)
+        (backbone, classifier), _ = pre_train(train_loader, valid_loader, bb_pre_path, clf_pre_path, his_pre_path, class_weights)
 
         #--------------------------------------------------------------------#
         #                      testing of pre-training                       #
@@ -401,21 +407,21 @@ def main():
         #--------------------------------------------------------------------#
         #               converting pre-training models to onnx               #
         #--------------------------------------------------------------------#
-        # backbone, classifier = load_model(bb_pre_path, clf_pre_path)
-        # backbone.eval()
-        # classifier.eval()
-        # combination = ResNet(backbone=backbone, classifier=classifier).to(device)
-        # dummy_input_backbone = torch.randn(1, len(SENSING_DIMENSIONS), SLIDING_WINDOW_LENGTH).to(device)
-        # torch.onnx.export(combination,
-        #                   dummy_input_backbone, cmb_pre_onnx_path,
-        #                   export_params=True,
-        #                   opset_version=13,
-        #                   do_constant_folding=True,
-        #                   input_names=['modelInput'],
-        #                   output_names=['modelOutput'],
-        #                   dynamic_axes={'modelInput': {0: 'batch_size'}, 'modelOutput': {0: 'batch_size'}}
-        #                   )
-        # print(f'combination has been converted to onnx and stored in {cmb_pre_onnx_path}')
+        backbone, classifier = load_model(bb_pre_path, clf_pre_path)
+        backbone.eval()
+        classifier.eval()
+        combination = ResNet(backbone=backbone, classifier=classifier).to(device)
+        dummy_input_backbone = torch.randn(1, len(SENSING_DIMENSIONS), SLIDING_WINDOW_LENGTH).to(device)
+        torch.onnx.export(combination,
+                          dummy_input_backbone, cmb_pre_onnx_path,
+                          export_params=True,
+                          opset_version=13,
+                          do_constant_folding=True,
+                          input_names=['modelInput'],
+                          output_names=['modelOutput'],
+                          dynamic_axes={'modelInput': {0: 'batch_size'}, 'modelOutput': {0: 'batch_size'}}
+                          )
+        print(f'combination has been converted to onnx and stored in {cmb_pre_onnx_path}')
 
         #--------------------------------------------------------------------#
         #                         inc-training-user                          #

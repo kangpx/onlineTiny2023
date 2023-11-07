@@ -4,29 +4,74 @@
 
 #if defined(OT_QVAR)
 #include "QvarKernels.h"
-#define INPUT_DATA_SIZE          (9*40)
-#define DENSE_INPUT_SIZE         (64*40)
+#define IN_C                     (9)
+#define IN_W                     (40)
+#define BOUT_C                   (32)
+#define BOUT_W                   (40)
+#define INPUT_DATA_SIZE          (IN_C*IN_W)
+#define DENSE_INPUT_SIZE         (BOUT_C*BOUT_W)
 #define DENSE_OUTPUT_SIZE        (10)
 #define NUM_CHUNK                (1)
+#define SGD                      (0)
+#define ADAM                     (1)
+#define OPTIMIZER                SGD
+#if (OPTIMIZER==SGD)
 #define LR                       ((F16)0.002f)
 #define MOMENTUM                 ((F16)0.5f)
+#elif (OPTIMIZER==ADAM)
+#define LR                       ((F16)0.002f)
+#define BETA1                    ((F16)0.9f)
+#define BETA2                    ((F16)0.99f)
+#define EPS                      ((F16)0.00000001f)
+#endif
+
 #elif defined(OT_ULTRA)
 #include "UltraKernels.h"
-#define INPUT_DATA_SIZE          (45*19)
-#define DENSE_INPUT_SIZE         (64*19)
+#define IN_C                     (45)
+#define IN_W                     (19)
+#define BOUT_C                   (32)
+#define BOUT_W                   (19)
+#define INPUT_DATA_SIZE          (IN_C*IN_W)
+#define DENSE_INPUT_SIZE         (BOUT_C*BOUT_W)
 #define DENSE_OUTPUT_SIZE        (8)
 #define NUM_CHUNK                (1)
+#define SGD                      (0)
+#define ADAM                     (1)
+#define OPTIMIZER                SGD
+#if (OPTIMIZER==SGD)
 #define LR                       ((F16)0.002f)
 #define MOMENTUM                 ((F16)0.5f)
+#elif (OPTIMIZER==ADAM)
+#define LR                       ((F16)0.002f)
+#define BETA1                    ((F16)0.9f)
+#define BETA2                    ((F16)0.99f)
+#define EPS                      ((F16)0.00000001f)
+#endif
+
 #elif defined(OT_GYM)
 #include "GymKernels.h"
-#define INPUT_DATA_SIZE          (7*40)
-#define DENSE_INPUT_SIZE         (64*40)
+#define IN_C                     (7)
+#define IN_W                     (40)
+#define BOUT_C                   (32)
+#define BOUT_W                   (40)
+#define INPUT_DATA_SIZE          (IN_C*IN_W)
+#define DENSE_INPUT_SIZE         (BOUT_C*BOUT_W)
 #define DENSE_OUTPUT_SIZE        (12)
 #define NUM_CHUNK                (2)
+#define SGD                      (0)
+#define ADAM                     (1)
+#define OPTIMIZER                ADAM
+#if (OPTIMIZER==SGD)
 #define LR                       ((F16)0.002f)
 #define MOMENTUM                 ((F16)0.9f)
+#elif (OPTIMIZER==ADAM)
+#define LR                       ((F16)0.002f)
+#define BETA1                    ((F16)0.9f)
+#define BETA2                    ((F16)0.99f)
+#define EPS                      ((F16)0.00000001f)
 #endif
+#endif
+
 #define OT_ENABLE                (1)
 #define OT_DISABLE               (0)
 #define DATA_FORMAT              F16
@@ -44,14 +89,6 @@ typedef struct{
 }KerOtUpdate_fp16_T;
 
 void ot_reset_icmt_t_cache(void);
-
-int ot_init(void);
-
-void ot_clean(void);
-
-void ot_update_core(void);
-
-void ot_update(void);
 
 int ot_init_chunk(void);
 

@@ -8,7 +8,7 @@ import torch
 
 SLIDING_WINDOW_LENGTH = 40 
 
-SLIDING_WINDOW_STEP = 40 
+SLIDING_WINDOW_STEP = 20 
 
 CLASSES = ['Adductor', 'ArmCurl', 'BenchPress', 'LegCurl', 'LegPress', 'Null', 'Riding', 'RopeSkipping', 'Running', 'Squat', 'StairClimber', 'Walking']
 SENSING_DIMENSIONS = ['A_x','A_y','A_z','G_x','G_y','G_z','Body_Capacitance']
@@ -69,15 +69,17 @@ def Xy_TrainTest(file, fold_n):
     # print(test.head(5))
 
     X_train = train[SENSING_DIMENSIONS].to_numpy()
-    X_test= test[SENSING_DIMENSIONS].to_numpy()
+    X_test = test[SENSING_DIMENSIONS].to_numpy()
+    Y_train = train['Workout'].to_numpy()
+    Y_test = test['Workout'].to_numpy()
 
-    for i in range(0, train.shape[0], SLIDING_WINDOW_STEP):
-        # X_train = np.append(X_train, train.iloc[i:i + SLIDING_WINDOW_LENGTH, 1:8].to_numpy().ravel())
-        y_train = np.append(y_train, most_common(list(train.iloc[i:(i + SLIDING_WINDOW_LENGTH), 0].to_numpy().ravel())))
-
-    for i in range(0, test.shape[0], SLIDING_WINDOW_STEP):
-        # X_test = np.append(X_test, test.iloc[i:i + SLIDING_WINDOW_LENGTH, 1:8].to_numpy().ravel())
-        y_test = np.append(y_test, most_common(list(test.iloc[i:(i + SLIDING_WINDOW_LENGTH), 0].to_numpy().ravel())))
+    # for i in range(0, train.shape[0], SLIDING_WINDOW_STEP):
+    #     # X_train = np.append(X_train, train.iloc[i:i + SLIDING_WINDOW_LENGTH, 1:8].to_numpy().ravel())
+    #     y_train = np.append(y_train, most_common(list(train.iloc[i:(i + SLIDING_WINDOW_LENGTH), 0].to_numpy().ravel())))
+    #
+    # for i in range(0, test.shape[0], SLIDING_WINDOW_STEP):
+    #     # X_test = np.append(X_test, test.iloc[i:i + SLIDING_WINDOW_LENGTH, 1:8].to_numpy().ravel())
+    #     y_test = np.append(y_test, most_common(list(test.iloc[i:(i + SLIDING_WINDOW_LENGTH), 0].to_numpy().ravel())))
 
     # print("X_train shape: ", X_train.shape)
     # print("y_train shape: ", y_train.shape)
@@ -89,6 +91,13 @@ def Xy_TrainTest(file, fold_n):
 
     # X_train = X_train.reshape(-1, 80, 7)
     X_train = sliding_window_view(X_train, (SLIDING_WINDOW_LENGTH, X_train.shape[1]))[::SLIDING_WINDOW_STEP, 0]
+    Y_train = sliding_window_view(Y_train, (SLIDING_WINDOW_LENGTH))[::SLIDING_WINDOW_STEP]
+    for i in range(Y_train.shape[0]):
+        y_train = np.append(y_train, most_common(list(Y_train[i])))
+    # print(y_train.shape)
+    # print(Y_train[40])
+    # print(y_train[40])
+
     #np.save(str(fold_n) + "_X_Train.npy", X_train)
     # print("X_train shape: ", X_train.shape)
     #pd.DataFrame(X_train).to_csv(outputdir + "X_train.csv")
@@ -100,6 +109,9 @@ def Xy_TrainTest(file, fold_n):
 
     # X_test = X_test.reshape(-1, 80, 7)
     X_test = sliding_window_view(X_test, (SLIDING_WINDOW_LENGTH, X_test.shape[1]))[::SLIDING_WINDOW_STEP, 0]
+    Y_test = sliding_window_view(Y_test, (SLIDING_WINDOW_LENGTH))[::SLIDING_WINDOW_STEP]
+    for i in range(Y_test.shape[0]):
+        y_test = np.append(y_test, most_common(list(Y_test[i])))
     #np.save(str(fold_n) + "_X_Test.npy", X_test)
     # print("X_test shape: ", X_test.shape)
     #pd.DataFrame(X_test).to_csv(outputdir + "X_test.csv")
@@ -126,7 +138,7 @@ def Xy_TrainTest(file, fold_n):
 
 
 if __name__ == '__main__':
-    pass
-    
+    x_train, y_train, x_test, y_test = Xy_TrainTest('~/onlineTiny2023datasets/Gym_Data.csv', 1)
+    print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
 
 

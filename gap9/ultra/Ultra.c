@@ -107,6 +107,7 @@ int main(void)
     }
     printf("Accuracy: %f\n", accuracy_score());
 
+    
 
     //------------------------------------------------------------------//
     //                         online training                          //

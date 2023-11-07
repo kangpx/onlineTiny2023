@@ -105,11 +105,11 @@ def main():
     }
 
     if args.mode == "accuracy":
-        data = np.load(os.path.join('/home/kangpx/onlineTiny2023/datasets/incu_datasets/gym', f'fold_{1}_incu_dataset.npz'))                                                                                                                                                                                             
+        data = np.load(os.path.join('/home/kangpx/onlineTiny2023/datasets/incu_datasets/gym', f'fold_{3}_incu_dataset_s20.npz'))                                                                                                                                                                                             
         x_incu, y_incu, x_test, y_test = data['x_incu'], data['y_incu'], data['x_test'], data['y_test']                                                                                                                                                                 
         print(x_test.shape, x_test.dtype)
-        x_test = np.bitwise_and(x_test.view(np.uint32), 0xFFFF0000)
-        x_test = x_test.view(np.float32)
+        #x_test = np.bitwise_and(x_test.view(np.uint32), 0xFFFF0000)
+        #x_test = x_test.view(np.float32)
         test_accuracy(G, x_test[:], y_test[:], True)
 
     elif args.mode == "performance":
