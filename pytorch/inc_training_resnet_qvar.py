@@ -126,8 +126,8 @@ def pre_train(train_loader, valid_loader, backbone_path, classifier_path, histor
     #--------------------------------------------------------------------#
     #                     pre-training configuration                     #
     #--------------------------------------------------------------------#
-    backbone = ResNetBackBone(in_channels=len(SENSING_DIMENSIONS), out_channels=64).to(device)
-    classifier = Classifier(in_features=64*40, out_features=len(CLASSES)).to(device)
+    backbone = ResNetBackBone(in_channels=len(SENSING_DIMENSIONS), mid_channels=32, out_channels=32).to(device)
+    classifier = Classifier(in_features=32*40, out_features=len(CLASSES)).to(device)
     print(backbone)
     print(classifier)
     total_params_backbone = sum(p.numel() for p in backbone.parameters())
@@ -261,6 +261,7 @@ def inc_training(backbone, classifier, inc_loader, test_loader, classifier_path,
     loss_fn = nn.CrossEntropyLoss(weight=class_weights).to(device)
 
     optimizer_classifier = optim.SGD(classifier.parameters(), lr=0.002, momentum=0.5)
+    # optimizer_classifier = optim.Adam(classifier.parameters(), lr=0.002, betas=(0.9,0.999))
 
     n_epochs = 5 
 
@@ -393,8 +394,8 @@ def testing(backbone, classifier, test_loader, class_weights):
 
 
 def load_model(backbone_path, classifier_path):
-    backbone = ResNetBackBone(in_channels=len(SENSING_DIMENSIONS), out_channels=64).to(device)
-    classifier = Classifier(in_features=64*40, out_features=len(CLASSES)).to(device)
+    backbone = ResNetBackBone(in_channels=len(SENSING_DIMENSIONS), mid_channels=32, out_channels=32).to(device)
+    classifier = Classifier(in_features=32*40, out_features=len(CLASSES)).to(device)
 
     backbone.load_state_dict(torch.load(backbone_path))
     classifier.load_state_dict(torch.load(classifier_path))
@@ -431,17 +432,17 @@ def main():
     foldlog_classwise_incu = []
     foldlog_classwise_incnu = []
 
-    include_incnu = True
+    include_incnu = False
     
     for fold in tqdm(range(1, 21)):
-        bb_pre_path       = f'../saved_models/qvar/pt/fold_{fold}_pre_backbone_{"fullvalid" if not include_incnu else "partvalid"}.pt'
-        clf_pre_path      = f'../saved_models/qvar/pt/fold_{fold}_pre_classifier_{"fullvalid" if not include_incnu else "partvalid"}.pt'
-        cmb_pre_onnx_path = f'../saved_models/qvar/onnx/fold_{fold}_pre_combination_{"fullvalid" if not include_incnu else "partvalid"}.onnx' 
-        clf_incu_path     = f'../saved_models/qvar/pt/fold_{fold}_incu_classifier_{"fullvalid" if not include_incnu else "partvalid"}.pt'
-        clf_incnu_path    = f'../saved_models/qvar/pt/fold_{fold}_incnu_classifier_{"fullvalid" if not include_incnu else "partvalid"}.pt'
-        his_pre_path      = f'../histories/qvar/fold_{fold}_pre_{"fullvalid" if not include_incnu else "partvalid"}.pkl'
-        his_incu_path     = f'../histories/qvar/fold_{fold}_incu_{"fullvalid" if not include_incnu else "partvalid"}.pkl'
-        his_incnu_path    = f'../histories/qvar/fold_{fold}_incnu_{"fullvalid" if not include_incnu else "partvalid"}.pkl'
+        bb_pre_path       = f'../saved_models/qvar/pt/fold_{fold}_pre_backbone_{"fullvalid" if not include_incnu else "partvalid"}_b32.pt'
+        clf_pre_path      = f'../saved_models/qvar/pt/fold_{fold}_pre_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32.pt'
+        cmb_pre_onnx_path = f'../saved_models/qvar/onnx/fold_{fold}_pre_combination_{"fullvalid" if not include_incnu else "partvalid"}_b32.onnx' 
+        clf_incu_path     = f'../saved_models/qvar/pt/fold_{fold}_incu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32.pt'
+        clf_incnu_path    = f'../saved_models/qvar/pt/fold_{fold}_incnu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32.pt'
+        his_pre_path      = f'../histories/qvar/fold_{fold}_pre_{"fullvalid" if not include_incnu else "partvalid"}_b32.pkl'
+        his_incu_path     = f'../histories/qvar/fold_{fold}_incu_{"fullvalid" if not include_incnu else "partvalid"}_b32.pkl'
+        his_incnu_path    = f'../histories/qvar/fold_{fold}_incnu_{"fullvalid" if not include_incnu else "partvalid"}_b32.pkl'
 
         #--------------------------------------------------------------------#
         #                          data preparation                          #

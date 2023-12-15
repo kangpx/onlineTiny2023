@@ -27,14 +27,15 @@ with open('../dataset_config.json', 'r') as json_file:
 
 
 def get_dataloader(fold, include_incnu=True):
-    x_train, y_train, x_test, y_test = Xy_TrainTest(file=dataset_config["gym_dataset_path"], fold_n=fold)
+    x_train, y_train, x_test, y_test = Xy_TrainTest(file=dataset_config["gym_dataset_path"], fold_n=fold, normalize=True)
+    print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
     x_test, x_incu, y_test, y_incu = train_test_split(x_test, y_test, train_size=0.6, random_state=136+fold)
     
     incu_indices = list(range(y_incu.shape[0]))
     random.Random(10).shuffle(incu_indices)
     x_incu = x_incu[incu_indices]
     y_incu = y_incu[incu_indices]
-    np.savez(os.path.join(dataset_config["gym_incu_dataset_root"], f'fold_{fold}_incu_dataset'), x_incu=x_incu.detach().numpy(), y_incu=y_incu.detach().numpy(), x_test=x_test.detach().numpy(), y_test=y_test.detach().numpy())
+    np.savez(os.path.join(dataset_config["gym_incu_dataset_root"], f'fold_{fold}_incu_dataset_s20'), x_incu=x_incu.detach().numpy(), y_incu=y_incu.detach().numpy(), x_test=x_test.detach().numpy(), y_test=y_test.detach().numpy())
 
     x_train, x_valid, y_train, y_valid = train_test_split(x_train, y_train, train_size=0.8, random_state=6507+fold)
     if include_incnu:
@@ -53,16 +54,16 @@ def get_dataloader(fold, include_incnu=True):
     else:
         incnu_dataset = None
 
-    # train_class_weights = torch.tensor(CLASS_WEIGHTS)
-    train_class_n_samples = [(y_train == i).sum().item() for i in range(len(CLASSES))]
-    train_class_weights = [1.0 / n_sample for n_sample in train_class_n_samples]
-    sample_weights = [train_class_weights[y.item()] for y in y_train]
-    sampler = WeightedRandomSampler(sample_weights, len(sample_weights), replacement=True)
-    train_class_weights = torch.tensor(train_class_weights)
+    train_class_weights = torch.tensor(CLASS_WEIGHTS)
+    #train_class_n_samples = [(y_train == i).sum().item() for i in range(len(CLASSES))]
+    #train_class_weights = [1.0 / n_sample for n_sample in train_class_n_samples]
+    #sample_weights = [train_class_weights[y.item()] for y in y_train]
+    #sampler = WeightedRandomSampler(sample_weights, len(sample_weights), replacement=True)
+    #train_class_weights = torch.tensor(train_class_weights)
 
 
-    # train_loader = DataLoader(train_dataset, shuffle=True, batch_size=64, drop_last=False)
-    train_loader = DataLoader(train_dataset, batch_size=64, drop_last=False, sampler=sampler)
+    train_loader = DataLoader(train_dataset, shuffle=True, batch_size=64, drop_last=False)
+    #train_loader = DataLoader(train_dataset, batch_size=64, drop_last=False, sampler=sampler)
     valid_loader = DataLoader(valid_dataset, shuffle=False, batch_size=64, drop_last=False)
     test_loader = DataLoader(test_dataset, shuffle=False, batch_size=64, drop_last=False)
     incu_loader = DataLoader(incu_dataset, shuffle=False, batch_size=1, drop_last=False)
@@ -97,8 +98,8 @@ def pre_train(train_loader, valid_loader, backbone_path, classifier_path, histor
     #--------------------------------------------------------------------#
     #                     pre-training configuration                     #
     #--------------------------------------------------------------------#
-    backbone = ResNetBackBone(in_channels=len(SENSING_DIMENSIONS), out_channels=64).to(device)
-    classifier = Classifier(in_features=64*SLIDING_WINDOW_LENGTH, out_features=len(CLASSES)).to(device)
+    backbone = ResNetBackBone(in_channels=len(SENSING_DIMENSIONS), mid_channels=32, out_channels=32).to(device)
+    classifier = Classifier(in_features=32*SLIDING_WINDOW_LENGTH, out_features=len(CLASSES)).to(device)
     print(backbone)
     print(classifier)
 
@@ -109,7 +110,7 @@ def pre_train(train_loader, valid_loader, backbone_path, classifier_path, histor
     
     n_epochs = 1000
 
-    early_stopping = EarlyStopping(patience=100, verbose=True, path=[backbone_path, classifier_path])
+    early_stopping = EarlyStopping(patience=100, verbose=True, delta=0.01, path=[backbone_path, classifier_path])
 
     log_period = 100
 
@@ -228,6 +229,9 @@ def inc_training(backbone, classifier, inc_loader, test_loader, classifier_path,
     loss_fn = nn.CrossEntropyLoss(weight=class_weights).to(device)
 
     optimizer_classifier = optim.SGD(classifier.parameters(), lr=0.002, momentum=0.9)
+    #optimizer_classifier = optim.Adam(classifier.parameters(), lr=0.002, betas=(0.9, 0.99), eps=1e-8)
+    #optimizer_backbone = optim.Adam(backbone.parameters(), lr=0.002, betas=(0.9, 0.99), eps=1e-08)
+
 
     n_epochs = 1
 
@@ -258,19 +262,23 @@ def inc_training(backbone, classifier, inc_loader, test_loader, classifier_path,
         #--------------------------------------------------------------------#
         for i_batch, (x_batch, y_batch) in enumerate(inc_loader):
             backbone.eval()
+            #backbone.train()
             classifier.train()
 
             x_batch = x_batch.to(device)
             y_batch = y_batch.to(device)
 
             optimizer_classifier.zero_grad()
+            #optimizer_backbone.zero_grad()
 
-            x_embedding = backbone(x_batch).detach()
+            #x_embedding = backbone(x_batch).detach()
+            x_embedding = backbone(x_batch)
             y_pred = classifier(x_embedding)
 
             loss = loss_fn(y_pred, y_batch)
             loss.backward()
 
+            #optimizer_backbone.step()
             optimizer_classifier.step()
 
             #--------------------------------------------------------------------#
@@ -360,8 +368,8 @@ def testing(backbone, classifier, test_loader, class_weights):
 
 
 def load_model(backbone_path, classifier_path):
-    backbone = ResNetBackBone(in_channels=len(SENSING_DIMENSIONS), out_channels=64).to(device)
-    classifier = Classifier(in_features=64*SLIDING_WINDOW_LENGTH, out_features=len(CLASSES)).to(device)
+    backbone = ResNetBackBone(in_channels=len(SENSING_DIMENSIONS), mid_channels=32, out_channels=32).to(device)
+    classifier = Classifier(in_features=32*SLIDING_WINDOW_LENGTH, out_features=len(CLASSES)).to(device)
     backbone.load_state_dict(torch.load(backbone_path))
     classifier.load_state_dict(torch.load(classifier_path))
     return backbone, classifier
@@ -378,15 +386,15 @@ def main():
 
     include_incnu = False
 
-    for fold in range(1, 2):
-        bb_pre_path       = f'../saved_models/gym/pt/fold_{fold}_pre_backbone_{"fullvalid" if not include_incnu else "partvalid"}_x.pt'
-        clf_pre_path      = f'../saved_models/gym/pt/fold_{fold}_pre_classifier_{"fullvalid" if not include_incnu else "partvalid"}_x.pt'
-        cmb_pre_onnx_path = f'../saved_models/gym/onnx/fold_{fold}_pre_combination_{"fullvalid" if not include_incnu else "partvalid"}_x.onnx' 
-        clf_incu_path     = f'../saved_models/gym/pt/fold_{fold}_incu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_x.pt'
-        clf_incnu_path    = f'../saved_models/gym/pt/fold_{fold}_incnu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_x.pt'
-        his_pre_path      = f'../histories/gym/fold_{fold}_pre_{"fullvalid" if not include_incnu else "partvalid"}_x.pkl'
-        his_incu_path     = f'../histories/gym/fold_{fold}_incu_{"fullvalid" if not include_incnu else "partvalid"}_x.pkl'
-        his_incnu_path    = f'../histories/gym/fold_{fold}_incnu_{"fullvalid" if not include_incnu else "partvalid"}_x.pkl'
+    for fold in range(1, 11):
+        bb_pre_path       = f'../saved_models/gym/pt/fold_{fold}_pre_backbone_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20.pt'
+        clf_pre_path      = f'../saved_models/gym/pt/fold_{fold}_pre_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20.pt'
+        cmb_pre_onnx_path = f'../saved_models/gym/onnx/fold_{fold}_pre_combination_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20.onnx' 
+        clf_incu_path     = f'../saved_models/gym/pt/fold_{fold}_incu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20.pt'
+        clf_incnu_path    = f'../saved_models/gym/pt/fold_{fold}_incnu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20.pt'
+        his_pre_path      = f'../histories/gym/fold_{fold}_pre_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20.pkl'
+        his_incu_path     = f'../histories/gym/fold_{fold}_incu_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20.pkl'
+        his_incnu_path    = f'../histories/gym/fold_{fold}_incnu_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20.pkl'
 
         #--------------------------------------------------------------------#
         #                          data preparation                          #

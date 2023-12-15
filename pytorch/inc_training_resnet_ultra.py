@@ -94,8 +94,8 @@ def pre_train(train_loader, valid_loader, backbone_path, classifier_path, histor
     #--------------------------------------------------------------------#
     #                     pre-training configuration                     #
     #--------------------------------------------------------------------#
-    backbone = ResNetBackBone(in_channels=45, out_channels=64).to(device)
-    classifier = Classifier(in_features=64*19, out_features=len(CLASSES)).to(device)
+    backbone = ResNetBackBone(in_channels=45, mid_channels=32, out_channels=32).to(device)
+    classifier = Classifier(in_features=32*19, out_features=len(CLASSES)).to(device)
     print(backbone)
     print(classifier)
 
@@ -225,7 +225,8 @@ def inc_training(backbone, classifier, inc_loader, test_loader, classifier_path,
 
     loss_fn = nn.CrossEntropyLoss(weight=class_weights).to(device)
 
-    optimizer_classifier = optim.SGD(classifier.parameters(), lr=0.002, momentum=0.5)
+    #optimizer_classifier = optim.SGD(classifier.parameters(), lr=0.002, momentum=0.5)
+    optimizer_classifier = optim.Adam(classifier.parameters(), lr=0.001, betas=(0.9, 0.999))
 
     n_epochs = 1
 
@@ -359,8 +360,8 @@ def testing(backbone, classifier, test_loader, class_weights):
 
 
 def load_model(backbone_path, classifier_path):
-    backbone = ResNetBackBone(in_channels=45, out_channels=64).to(device)
-    classifier = Classifier(in_features=64*19, out_features=len(CLASSES)).to(device)
+    backbone = ResNetBackBone(in_channels=45, mid_channels=32, out_channels=32).to(device)
+    classifier = Classifier(in_features=32*19, out_features=len(CLASSES)).to(device)
     backbone.load_state_dict(torch.load(backbone_path))
     classifier.load_state_dict(torch.load(classifier_path))
     return backbone, classifier
@@ -377,15 +378,15 @@ def main():
 
     include_incnu = False
 
-    for fold in range(7):
-        bb_pre_path       = f'../saved_models/ultra/pt/fold_{fold}_pre_backbone_{"fullvalid" if not include_incnu else "partvalid"}_x.pt'
-        clf_pre_path      = f'../saved_models/ultra/pt/fold_{fold}_pre_classifier_{"fullvalid" if not include_incnu else "partvalid"}_x.pt'
-        cmb_pre_onnx_path = f'../saved_models/ultra/onnx/fold_{fold}_pre_combination_{"fullvalid" if not include_incnu else "partvalid"}_x.onnx' 
-        clf_incu_path     = f'../saved_models/ultra/pt/fold_{fold}_incu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_x.pt'
-        clf_incnu_path    = f'../saved_models/ultra/pt/fold_{fold}_incnu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_x.pt'
-        his_pre_path      = f'../histories/ultra/fold_{fold}_pre_{"fullvalid" if not include_incnu else "partvalid"}_x.pkl'
-        his_incu_path     = f'../histories/ultra/fold_{fold}_incu_{"fullvalid" if not include_incnu else "partvalid"}_x.pkl'
-        his_incnu_path    = f'../histories/ultra/fold_{fold}_incnu_{"fullvalid" if not include_incnu else "partvalid"}_x.pkl'
+    for fold in range(0, 7):
+        bb_pre_path       = f'../saved_models/ultra/pt/fold_{fold}_pre_backbone_{"fullvalid" if not include_incnu else "partvalid"}_b32.pt'
+        clf_pre_path      = f'../saved_models/ultra/pt/fold_{fold}_pre_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32.pt'
+        cmb_pre_onnx_path = f'../saved_models/ultra/onnx/fold_{fold}_pre_combination_{"fullvalid" if not include_incnu else "partvalid"}_b32.onnx' 
+        clf_incu_path     = f'../saved_models/ultra/pt/fold_{fold}_incu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32.pt'
+        clf_incnu_path    = f'../saved_models/ultra/pt/fold_{fold}_incnu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32.pt'
+        his_pre_path      = f'../histories/ultra/fold_{fold}_pre_{"fullvalid" if not include_incnu else "partvalid"}_b32.pkl'
+        his_incu_path     = f'../histories/ultra/fold_{fold}_incu_{"fullvalid" if not include_incnu else "partvalid"}_b32.pkl'
+        his_incnu_path    = f'../histories/ultra/fold_{fold}_incnu_{"fullvalid" if not include_incnu else "partvalid"}_b32.pkl'
 
         #--------------------------------------------------------------------#
         #                          data preparation                          #
@@ -412,15 +413,15 @@ def main():
         combination = ResNet(backbone=backbone, classifier=classifier).to(device)
         dummy_input_backbone = torch.randn(1, 45, 19).to(device)
         torch.onnx.export(combination,
-                          dummy_input_backbone,
-                          cmb_pre_onnx_path,
-                          export_params=True,
-                          opset_version=13,
-                          do_constant_folding=True,
-                          input_names=['modelInput'],
-                          output_names=['modelOutput'],
-                          dynamic_axes={'modelInput': {0: 'batch_size'}, 'modelOutput': {0: 'batch_size'}}
-                          )
+                         dummy_input_backbone,
+                         cmb_pre_onnx_path,
+                         export_params=True,
+                         opset_version=10,
+                         do_constant_folding=True,
+                         input_names=['modelInput'],
+                         output_names=['modelOutput'],
+                         dynamic_axes={'modelInput': {0: 'batch_size'}, 'modelOutput': {0: 'batch_size'}}
+                         )
         print(f'combination has been converted to onnx and stored in {cmb_pre_onnx_path}')
 
         #--------------------------------------------------------------------#
@@ -485,7 +486,7 @@ def main():
                                     'pre+onl(user)':foldlog_incu.mean().values.tolist(),
                                     'pre+onl(nonuser)':foldlog_incnu.mean().values.tolist()}) 
     print(df_allfolds.round(4))
-
+   
     # foldwise statistics
     fold_labels = [f'fold_{i}' for i in range(7)]
     fold_metrics = {
@@ -496,26 +497,26 @@ def main():
         'macro_f1_onl_user': [foldlog_incu.loc[i, 'macro_f1'].round(4) for i in range(7)],
         'macro_f1_onl_nonuser': [foldlog_incnu.loc[i, 'macro_f1'].round(4) for i in range(7)],
     } 
-
+     
     x = np.array([2*i for i in range(1, 8)])
     width = 0.3
     multiplier = 0
-
+   
     fig, ax = plt.subplots(layout='constrained', figsize=(35, 10))
-
+   
     for attribute, measurement in fold_metrics.items():
         offset = width * multiplier
         rects = ax.bar(x + offset, measurement, width, label=attribute)
         ax.bar_label(rects, padding=2)
         multiplier += 1
-
+    
     ax.set_xticks(x + width, fold_labels, fontsize=15)
     ax.tick_params(axis='y', labelsize=15)
     ax.legend(loc='upper left', ncol=2, fontsize=15)
     ax.set_ylim(0.8, 1)
-
+    #
     plt.savefig(f'../figures/foldwise_ultrasonic_{"fullvalid" if not include_incnu else "partvalid"}.jpg')
-
+   
     # classwise statistics
     class_labels = CLASSES
     class_metrics = {
@@ -529,24 +530,24 @@ def main():
         'f1_onl_user': [np.round(np.mean([foldlog_classwise_incu[i_fold][2][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)],
         'f1_onl_nonuser': [np.round(np.mean([foldlog_classwise_incnu[i_fold][2][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)]
     } 
-
+     
     x = np.array([3*i for i in range(8)])
     width = 0.3
     multiplier = 0
-
+    
     fig, ax = plt.subplots(layout='constrained', figsize=(55, 10))
-
+    
     for attribute, measurement in class_metrics.items():
         offset = width * multiplier
         rects = ax.bar(x + offset, measurement, width, label=attribute)
         ax.bar_label(rects, padding=2)
         multiplier += 1
-
+    
     ax.set_xticks(x + width, class_labels, fontsize=15)
     ax.tick_params(axis='y', labelsize=15)
     ax.legend(loc='upper left', ncol=1, fontsize=15)
     ax.set_ylim(0.8, 1)
-
+    
     plt.savefig(f'../figures/classwise_ultrasonic_{"fullvalid" if not include_incnu else "partvalid"}.jpg')
 
 if __name__ == '__main__':

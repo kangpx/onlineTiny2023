@@ -92,7 +92,7 @@ int main(void)
     //------------------------------------------------------------------//
     //                               test                               //
     //------------------------------------------------------------------//
-    /*for (unsigned int sample_idx = 0; sample_idx < N_TEST_SAMPLE; sample_idx++){
+    for (unsigned int sample_idx = 0; sample_idx < N_TEST_SAMPLE; sample_idx++){
         y_test_real[sample_idx] = 0xfe;
         y_test_pred[sample_idx] = 0xff;
     }
@@ -105,7 +105,7 @@ int main(void)
 
         printf("TEST--idx = %lu/%lu, y_real/y_pred = %lu/%lu\n", sample_idx + 1, N_TEST_SAMPLE, y_real, y_pred);
     }
-    printf("Accuracy: %f\n", accuracy_score());*/
+    printf("Accuracy: %f\n", accuracy_score());
 
 
     //------------------------------------------------------------------//

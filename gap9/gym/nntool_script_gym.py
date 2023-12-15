@@ -72,6 +72,7 @@ def main():
         quant_opts={
             "scheme": "FLOAT",
             "float_type": "bfloat16",
+            "use_ne16": True,
         }
     elif args.fp32:
         quant_opts={
@@ -96,7 +97,7 @@ def main():
         "l1_size": 128000,
         "cluster_stack_size": 1024,
         "cluster_slave_stack_size": 512,
-        # "graph_l1_promotion": 1, #2,
+        #"graph_l1_promotion": 1, #2,
         #"graph_group_weights": True,
         #"graph_async_fork": True,
         "graph_monitor_cycles": True,

@@ -140,7 +140,7 @@ int main(void)
         printf("TEST--idx = %lu/%lu, y_real/y_pred = %lu/%lu\n", sample_idx+1, N_TEST_SAMPLE, y_real, y_pred);
     }
     printf("Accuracy: %f\n", accuracy_score());
-
+    
     //------------------------------------------------------------------//
     //                          destruct model                          //
     //------------------------------------------------------------------//

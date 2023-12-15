@@ -87,6 +87,7 @@ def main():
         quant_opts={
             "scheme": "FLOAT",
             "float_type": "bfloat16",
+            "use_ne16": True,
         }
     elif args.fp32:
         quant_opts={

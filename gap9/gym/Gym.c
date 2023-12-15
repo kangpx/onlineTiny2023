@@ -16,8 +16,8 @@
 
 /* extern global variables */
 AT_HYPERFLASH_EXT_ADDR_TYPE Gym_L3_Flash = 0;
-extern unsigned char ot_flag;
-extern unsigned char y_real;
+extern unsigned int ot_flag;
+extern unsigned int y_real;
 extern F16 in_data[INPUT_DATA_SIZE];
 extern F16 out_data[DENSE_OUTPUT_SIZE];
 
@@ -58,7 +58,7 @@ int main(void)
     pi_cluster_conf_init(&cl_conf);
     cl_conf.id = 0;
     cl_conf.cc_stack_size = STACK_SIZE;
-    //cl_conf.icache_conf = PI_CLUSTER_MASTER_CORE_ICACHE_ENABLE | PI_CLUSTER_ICACHE_PREFETCH_ENABLE | PI_CLUSTER_ICACHE_ENABLE;
+    cl_conf.icache_conf = PI_CLUSTER_MASTER_CORE_ICACHE_ENABLE | PI_CLUSTER_ICACHE_PREFETCH_ENABLE | PI_CLUSTER_ICACHE_ENABLE;
 
     pi_open_from_conf(&cluster_dev, (void *) &cl_conf);
     if (pi_cluster_open(&cluster_dev))
@@ -91,7 +91,7 @@ int main(void)
     // ------------------------------------------------------------------//
     //                               test                               //
     // ------------------------------------------------------------------//
-    for (unsigned int sample_idx = 0; sample_idx < N_TEST_SAMPLE; sample_idx++){
+/*    for (unsigned int sample_idx = 0; sample_idx < N_TEST_SAMPLE; sample_idx++){
         y_test_real[sample_idx] = 0xfe;
         y_test_pred[sample_idx] = 0xff;
     }
@@ -105,7 +105,7 @@ int main(void)
         printf("TEST--idx = %lu/%lu, y_real/y_pred = %lu/%lu, accuracy=%f\n", sample_idx+1, N_TEST_SAMPLE, y_real, y_pred, accuracy_score(sample_idx+1));
     }
     printf("Accuracy: %f\n", accuracy_score(N_TEST_SAMPLE));
-
+*/
     //------------------------------------------------------------------//
     //                         online training                          //
     //------------------------------------------------------------------//
@@ -123,12 +123,14 @@ int main(void)
     //------------------------------------------------------------------//
     //                               test                               //
     //------------------------------------------------------------------//
-    for (unsigned int sample_idx = 0; sample_idx < N_TEST_SAMPLE; sample_idx++){
+   for (unsigned int sample_idx = 0; sample_idx < N_TEST_SAMPLE; sample_idx++){
         y_test_real[sample_idx] = 0xfe;
         y_test_pred[sample_idx] = 0xff;
     }
     for (unsigned int sample_idx = 0; sample_idx < N_TEST_SAMPLE; sample_idx++){
+    //for (unsigned int sample_idx = 10; sample_idx < 11; sample_idx++){
         triplet_init(TEST_SAMPLE_DIR, sample_idx, OT_DISABLE);
+
         y_test_real[sample_idx] = y_real;
 
         pi_cluster_send_task_to_cl(&cluster_dev, pi_cluster_task(&cl_task, inference, &y_pred));
@@ -185,7 +187,7 @@ static void readXYfromFloat32File(char *fileName, unsigned int xSize, unsigned i
         printf("Failed to open file, %s\n", fileName);
     }
     F16 *pXBuffer = (F16 *)xBuffer;
-    unsigned char *pYBuffer = (unsigned char *)yBuffer;
+    unsigned int *pYBuffer = (unsigned int *)yBuffer;
     unsigned char *inputBuf = (unsigned char *)__ALLOC_L2((xSize + ySize) * 4); // x4 because of float32
     if (inputBuf == NULL){
         printf("Malloc failed when loading data\n");
@@ -206,7 +208,7 @@ static void readXYfromFloat32File(char *fileName, unsigned int xSize, unsigned i
     for (int i=0; i<xSize; i++)
         ((F16 *)pXBuffer)[i] = (F16)(((float *)inputBuf)[i]);
     for (int i=0; i<ySize; i++)
-        ((unsigned char *)pYBuffer)[i] = (unsigned char)(((float *)inputBuf)[xSize+i]);
+        ((unsigned int *)pYBuffer)[i] = (unsigned int)(((float *)inputBuf)[xSize+i]);
     __FREE_L2(inputBuf, (xSize+ySize)*4);
     __CLOSE(File);
     __FS_DEINIT(fs);

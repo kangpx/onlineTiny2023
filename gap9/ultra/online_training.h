@@ -19,7 +19,7 @@
 #define LR                       ((F16)0.002f)
 #define MOMENTUM                 ((F16)0.5f)
 #elif (OPTIMIZER==ADAM)
-#define LR                       ((F16)0.002f)
+#define LR                       ((F16)0.001f)
 #define BETA1                    ((F16)0.9f)
 #define BETA2                    ((F16)0.99f)
 #define EPS                      ((F16)0.00000001f)
@@ -37,7 +37,7 @@
 #define NUM_CHUNK                (1)
 #define SGD                      (0)
 #define ADAM                     (1)
-#define OPTIMIZER                SGD
+#define OPTIMIZER                SGD 
 #if (OPTIMIZER==SGD)
 #define LR                       ((F16)0.002f)
 #define MOMENTUM                 ((F16)0.5f)
@@ -57,10 +57,10 @@
 #define INPUT_DATA_SIZE          (IN_C*IN_W)
 #define DENSE_INPUT_SIZE         (BOUT_C*BOUT_W)
 #define DENSE_OUTPUT_SIZE        (12)
-#define NUM_CHUNK                (2)
+#define NUM_CHUNK                (1)
 #define SGD                      (0)
 #define ADAM                     (1)
-#define OPTIMIZER                ADAM
+#define OPTIMIZER                SGD
 #if (OPTIMIZER==SGD)
 #define LR                       ((F16)0.002f)
 #define MOMENTUM                 ((F16)0.9f)
@@ -86,6 +86,20 @@
 typedef struct{
     unsigned int       N;
     unsigned int       i_chunk;
+    unsigned int * __restrict__  y_ptr;
+    F16 *__restrict__ w_ptr;
+    F16 *__restrict__ b_ptr;
+    F16 *__restrict__ i_ptr;
+    F16 *__restrict__ o_ptr;
+#if (OPTIMIZER == SGD)
+    F16 *__restrict__ w_icmt_ptr;
+    F16 *__restrict__ b_icmt_ptr;
+#elif (OPTIMIZER == ADAM)
+    F16 *__restrict__ w_m_icmt_ptr;
+    F16 *__restrict__ w_v_icmt_ptr;
+    F16 *__restrict__ b_m_icmt_ptr;
+    F16 *__restrict__ b_v_icmt_ptr;
+#endif
 }KerOtUpdate_fp16_T;
 
 void ot_reset_icmt_t_cache(void);
@@ -93,10 +107,6 @@ void ot_reset_icmt_t_cache(void);
 int ot_init_chunk(void);
 
 void ot_clean_chunk(void);
-
-void ot_update_core_chunk(unsigned int, unsigned int);
-
-void ot_update_chunk(void);
 
 void ot_update_chunk_parallel(void);
 

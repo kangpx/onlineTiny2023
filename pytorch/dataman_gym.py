@@ -30,7 +30,7 @@ def fold(n, data):
     return train, test
 
 
-def Xy_TrainTest(file, fold_n):
+def Xy_TrainTest(file, fold_n, normalize=True):
 
     X_train = np.array([])
     y_train = np.array([])
@@ -72,6 +72,13 @@ def Xy_TrainTest(file, fold_n):
     X_test = test[SENSING_DIMENSIONS].to_numpy()
     Y_train = train['Workout'].to_numpy()
     Y_test = test['Workout'].to_numpy()
+    if normalize:
+        channel_mean = np.mean(X_train, axis=0) 
+        channel_std = np.std(X_train, axis=0)
+        X_train = (X_train - channel_mean) / channel_std
+        X_test = (X_test - channel_mean) / channel_std
+
+
 
     # for i in range(0, train.shape[0], SLIDING_WINDOW_STEP):
     #     # X_train = np.append(X_train, train.iloc[i:i + SLIDING_WINDOW_LENGTH, 1:8].to_numpy().ravel())
@@ -139,6 +146,6 @@ def Xy_TrainTest(file, fold_n):
 
 if __name__ == '__main__':
     x_train, y_train, x_test, y_test = Xy_TrainTest('~/onlineTiny2023datasets/Gym_Data.csv', 1)
-    print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
+    # print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
 
 
