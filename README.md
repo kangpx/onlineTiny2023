@@ -14,9 +14,11 @@ For convenience, the datasets can be accessed by downloading this zip file:) htt
 The model topology is from [1] and shown in the following figure:
 <p align="center"><img width="310" alt="Screenshot 2023-08-20 at 22 27 59" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/ab6f4c5d-2c19-4714-888c-034a19d46240"></p>
 
+Difference from [1] is that the channel number is changed from 64 to 32.
+
 The three datasets' pre-trained models of each fold (leave-one-user-out) formatted in .pt and .onnx are stored under the the directory `saved_models`. For .pt models, backbone and classifier are stored seperately. For .onnx models, the backbone and classifier are combined before being saved.
 ## Online Training using PyTorch
-### Gym Dataset
+### Gym Dataset (OUTDATED)
 classwise:
 ![classwise_gym_partvalid](https://github.com/kangpx/onlineTiny2023/assets/118830544/4ce74734-be43-4682-97e1-79f252993459)
 
@@ -26,7 +28,7 @@ foldwise:
 
 
 
-### QVAR Dataset
+### QVAR Dataset (OUTDATED)
 classwise:
 ![classwise_qvar_partvalid](https://github.com/kangpx/onlineTiny2023/assets/118830544/e0bc2537-21b5-4968-814c-6e4d48217ce5)
 
@@ -37,7 +39,7 @@ foldwise:
 
 
 
-### Ultra Dataset
+### Ultra Dataset (OUTDATED)
 classwise:
 ![classwise_ultrasonic_partvalid](https://github.com/kangpx/onlineTiny2023/assets/118830544/4d1a5eb7-eb81-41cc-8bb8-6bf964d112ce)
 
@@ -87,16 +89,16 @@ This function copies the weights of the classifier into SRAM, registers the call
 This function updates all the weights and biases of the classifier, which should be called after inference.
 ### Performance Evaluation
 Random seed is used to ensure that both the dataset splitting and the input order of the online training data are the same for the on-MCU method and the PyTorch-based method. The following shows the results of online training when the valid-online training (nonuser) splitting is **not** applied, which means that full validation datasets are used during offline trainings.
-#### Gym Dataset
+#### Gym Dataset (OUTDATED)
 lr=0.002, momentum=0.9, 1 epoch of online training using user samples.
 <p align="center"><img width="863" alt="Screenshot 2023-08-23 at 19 58 17" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/e41b74af-2212-4159-9569-d79270648dd5"></p>
 
-#### QVAR Dataset
+#### QVAR Dataset (OUTDATED)
 lr=0.002, momentum=0.5, 5 epoches of online training using user samples.
 <p align="center"><img width="863" alt="Screenshot 2023-08-23 at 20 27 15" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/077569be-8c37-4887-893c-585bc67d0032"></p>
 
 
-#### Ultra Dataset
+#### Ultra Dataset (OUTDATED)
 lr=0.002, momentum=0.5, 1 epoch of online training using user samples.
 <p align="center"><img width="847" alt="Screenshot 2023-08-22 at 21 55 58" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/2be303bc-6cd8-48c8-b6cb-9e4c71a786ed"></p>
 
@@ -120,35 +122,22 @@ Source code of the engine can be found in
 - `gap9/xxx/online_training.c`
 
 APIs:
-- ot_init()
-> int ot_init(void);
-
-This function allocates a piece of dynamic L1-memory for online training, initilizes the buffer pointers and resets the w/b increment cache to all zeros. Returns -1 if failed to allocate L1-memory otherwise 0. This funtion should be called after the network initialization and before online training.
-
-- ot_update()
-> void ot_update(void);
-
-This function manages the transfer of the needed buffers between L2- and L1 memory and updates the weights/biases of the classifier. This function should be called after `ot_init()`.
-
-- ot_clean()
-> void ot_clean(void);
-
-This function frees the dynamic L1-memory allocated in `ot_init()`.
-
 - ot_init_chunk()
 > int ot_init_chunk(void);
 
-Init funtion for the case where the w/b icrement caches & output buffers are transferred between L2- and L1-memory and updated in chunks (Default NUM_CHUNK for gym, qvar, ultra datasets are 2, 1, 1).
+This function allocates a piece of dynamic L1-memory for online training, initilizes the buffer pointers and resets the w/b increment cache to all zeros. Returns -1 if failed to allocate L1-memory otherwise 0. This funtion should be called after the network initialization and before online training.
 
-- ot_update_chunk()
-> void ot_update_chunk(void);
+- ot_clean_chunk()
+> void ot_clean_chunk(void);
 
-Update funtion for the case where the w/b icrement caches & output buffers are transferred between L2- and L1-memory and updated in chunks.
+This function frees the dynamic L1-memory allocated in `ot_init_chunk()`.
 
 - ot_update_chunk_parallel()
 > void ot_update_chunk(void);
 
 Update funtion for the case where multi-clusters are used and the w/b icrement caches & output buffers are transferred between L2- and L1-memory and updated in chunks.
+
+**"chunk" here means that w/b increment buffers and output buffers in L2-memory can be divided into equal-length chunks, which are transferred to L1-memory and updated one by one during online training. Default chunk number is 1 for all the three datastes.**
 
 #### Run the Project
 To run the project (taking ultra project as example):
@@ -172,13 +161,13 @@ where `tensors` is the directory designated in the NNTool script to store the te
 >make all run platform=gvsoc
 
 ### Performance Evaluation
-#### Ultra Dataset
+#### Ultra Dataset (OUTDATED)
 lr=0.002, momentum=0.5, 1 epoch of online training using user samples, full validation during pre-training. 
 
 fastexp with underflow check:
 <p align="center"><img width="840" alt="Screenshot 2023-09-19 at 16 00 12" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/dac50123-085d-4846-a800-44af74867c09"></p>
 
-#### Qvar Dataset
+#### Qvar Dataset (OUTDATED)
 lr=0.002, momentum=0.5, 5 epoches of online training using user samples, full validation during pre-training.
 
 fastexp with underflow check:
@@ -186,6 +175,10 @@ fastexp with underflow check:
 
 fasterexp:
 <p align="center"><img width="852" alt="Screenshot 2023-09-19 at 16 02 17" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/adc66236-c348-4163-976c-d5827e6054db"></p>
+
+#### Gym Dataset
+lr=0.002, momentum=0.9, 1 epoch of online training using user samples, full validation during pre-training.
+<p align="center"><img width="467" alt="Screenshot 2023-12-15 at 15 09 16" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/a0dcc5f1-f9f1-4742-9594-29e4b04260bb"></p>
 
 
 
