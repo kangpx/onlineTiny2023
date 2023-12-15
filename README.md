@@ -14,6 +14,8 @@ For convenience, the datasets can be accessed by downloading this zip file:) htt
 The model topology is from [1] and shown in the following figure:
 <p align="center"><img width="310" alt="Screenshot 2023-08-20 at 22 27 59" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/ab6f4c5d-2c19-4714-888c-034a19d46240"></p>
 
+Difference from [1] is that the channel number is changed from 64 to 32.
+
 The three datasets' pre-trained models of each fold (leave-one-user-out) formatted in .pt and .onnx are stored under the the directory `saved_models`. For .pt models, backbone and classifier are stored seperately. For .onnx models, the backbone and classifier are combined before being saved.
 ## Online Training using PyTorch
 ### Gym Dataset
@@ -120,35 +122,22 @@ Source code of the engine can be found in
 - `gap9/xxx/online_training.c`
 
 APIs:
-- ot_init()
-> int ot_init(void);
-
-This function allocates a piece of dynamic L1-memory for online training, initilizes the buffer pointers and resets the w/b increment cache to all zeros. Returns -1 if failed to allocate L1-memory otherwise 0. This funtion should be called after the network initialization and before online training.
-
-- ot_update()
-> void ot_update(void);
-
-This function manages the transfer of the needed buffers between L2- and L1 memory and updates the weights/biases of the classifier. This function should be called after `ot_init()`.
-
-- ot_clean()
-> void ot_clean(void);
-
-This function frees the dynamic L1-memory allocated in `ot_init()`.
-
 - ot_init_chunk()
 > int ot_init_chunk(void);
 
-Init funtion for the case where the w/b icrement caches & output buffers are transferred between L2- and L1-memory and updated in chunks (Default NUM_CHUNK for gym, qvar, ultra datasets are 2, 1, 1).
+This function allocates a piece of dynamic L1-memory for online training, initilizes the buffer pointers and resets the w/b increment cache to all zeros. Returns -1 if failed to allocate L1-memory otherwise 0. This funtion should be called after the network initialization and before online training.
 
-- ot_update_chunk()
-> void ot_update_chunk(void);
+- ot_clean_chunk()
+> void ot_clean_chunk(void);
 
-Update funtion for the case where the w/b icrement caches & output buffers are transferred between L2- and L1-memory and updated in chunks.
+This function frees the dynamic L1-memory allocated in `ot_init_chunk()`.
 
 - ot_update_chunk_parallel()
 > void ot_update_chunk(void);
 
 Update funtion for the case where multi-clusters are used and the w/b icrement caches & output buffers are transferred between L2- and L1-memory and updated in chunks.
+
+**"chunk" here means that w/b increment buffers and output buffers in L2-memory can be divided into equal-length chunks, which are transferred to L1-memory and updated one by one during online training. Default chunk number is 1 for all the three datastes.**
 
 #### Run the Project
 To run the project (taking ultra project as example):
