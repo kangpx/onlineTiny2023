@@ -12,6 +12,12 @@
 #### power
 1. energy per inference
 2. power/energy efficiency?
+### path of changed files
+1. CNN_Defines_fp16.h: gap_sdk_private-master/tools/autotiler_v3/CNN_Defines_fp16.h
+2. CNN_MatMul_Conv_fp16.c: gap_sdk_private-master/tools/autotiler_v3/CNN_MatMul_Conv_fp16.c
+3. CNN_softMax_fp16.c: gap_sdk_private-master/tools/autotiler_v3/CNN_SoftMax_fp16.c
+4. FastFloatApprox.h: gap_sdk_private-master/tools/autotiler_v3/DSP_Libraries/FastFloatApprox.h
+
 ## Python
 3.9.12
 ## PyTorch
