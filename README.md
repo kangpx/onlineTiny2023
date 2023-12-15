@@ -1,4 +1,4 @@
-![image](https://github.com/kangpx/onlineTiny2023/assets/118830544/9ba4d529-c4da-4966-a822-cc99bb60523a)# onlineTiny2023
+# onlineTiny2023
  
 ## Python
 3.9.12
