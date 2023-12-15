@@ -1,5 +1,17 @@
 # onlineTiny2023
- 
+## Latency and Power Measurements
+### model
+1. ultra: onlineTiny2023/saved_models/ultra/onnx/fold_1_pre_combination_fullvalid_b32.onnx
+2. qvar: onlineTiny2023/saved_models/qvar/onnx/fold_1_pre_combination_fullvalid_b32.onnx
+3. gym: onlineTiny2023/saved_models/gym/onnx/fold_1_pre_combination_fullvalid_b32_s20.onnx
+### latency and power
+[stm32F7, GAP9] x different operating frequency and voltage 
+#### latency
+1. latency per inference
+2. latency per parameter update
+#### power
+1. energy per inference
+2. power/energy efficiency?
 ## Python
 3.9.12
 ## PyTorch
