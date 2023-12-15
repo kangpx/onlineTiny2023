@@ -1,4 +1,4 @@
-# onlineTiny2023
+![image](https://github.com/kangpx/onlineTiny2023/assets/118830544/9ba4d529-c4da-4966-a822-cc99bb60523a)# onlineTiny2023
  
 ## Python
 3.9.12
@@ -18,7 +18,7 @@ Difference from [1] is that the channel number is changed from 64 to 32.
 
 The three datasets' pre-trained models of each fold (leave-one-user-out) formatted in .pt and .onnx are stored under the the directory `saved_models`. For .pt models, backbone and classifier are stored seperately. For .onnx models, the backbone and classifier are combined before being saved.
 ## Online Training using PyTorch
-### Gym Dataset
+### Gym Dataset (OUTDATED)
 classwise:
 ![classwise_gym_partvalid](https://github.com/kangpx/onlineTiny2023/assets/118830544/4ce74734-be43-4682-97e1-79f252993459)
 
@@ -28,7 +28,7 @@ foldwise:
 
 
 
-### QVAR Dataset
+### QVAR Dataset (OUTDATED)
 classwise:
 ![classwise_qvar_partvalid](https://github.com/kangpx/onlineTiny2023/assets/118830544/e0bc2537-21b5-4968-814c-6e4d48217ce5)
 
@@ -39,7 +39,7 @@ foldwise:
 
 
 
-### Ultra Dataset
+### Ultra Dataset (OUTDATED)
 classwise:
 ![classwise_ultrasonic_partvalid](https://github.com/kangpx/onlineTiny2023/assets/118830544/4d1a5eb7-eb81-41cc-8bb8-6bf964d112ce)
 
@@ -89,16 +89,16 @@ This function copies the weights of the classifier into SRAM, registers the call
 This function updates all the weights and biases of the classifier, which should be called after inference.
 ### Performance Evaluation
 Random seed is used to ensure that both the dataset splitting and the input order of the online training data are the same for the on-MCU method and the PyTorch-based method. The following shows the results of online training when the valid-online training (nonuser) splitting is **not** applied, which means that full validation datasets are used during offline trainings.
-#### Gym Dataset
+#### Gym Dataset (OUTDATED)
 lr=0.002, momentum=0.9, 1 epoch of online training using user samples.
 <p align="center"><img width="863" alt="Screenshot 2023-08-23 at 19 58 17" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/e41b74af-2212-4159-9569-d79270648dd5"></p>
 
-#### QVAR Dataset
+#### QVAR Dataset (OUTDATED)
 lr=0.002, momentum=0.5, 5 epoches of online training using user samples.
 <p align="center"><img width="863" alt="Screenshot 2023-08-23 at 20 27 15" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/077569be-8c37-4887-893c-585bc67d0032"></p>
 
 
-#### Ultra Dataset
+#### Ultra Dataset (OUTDATED)
 lr=0.002, momentum=0.5, 1 epoch of online training using user samples.
 <p align="center"><img width="847" alt="Screenshot 2023-08-22 at 21 55 58" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/2be303bc-6cd8-48c8-b6cb-9e4c71a786ed"></p>
 
@@ -161,13 +161,13 @@ where `tensors` is the directory designated in the NNTool script to store the te
 >make all run platform=gvsoc
 
 ### Performance Evaluation
-#### Ultra Dataset
+#### Ultra Dataset (OUTDATED)
 lr=0.002, momentum=0.5, 1 epoch of online training using user samples, full validation during pre-training. 
 
 fastexp with underflow check:
 <p align="center"><img width="840" alt="Screenshot 2023-09-19 at 16 00 12" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/dac50123-085d-4846-a800-44af74867c09"></p>
 
-#### Qvar Dataset
+#### Qvar Dataset (OUTDATED)
 lr=0.002, momentum=0.5, 5 epoches of online training using user samples, full validation during pre-training.
 
 fastexp with underflow check:
@@ -175,6 +175,10 @@ fastexp with underflow check:
 
 fasterexp:
 <p align="center"><img width="852" alt="Screenshot 2023-09-19 at 16 02 17" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/adc66236-c348-4163-976c-d5827e6054db"></p>
+
+#### Gym Dataset
+lr=0.002, momentum=0.9, 1 epoch of online training using user samples, full validation during pre-training.
+<p align="center"><img width="467" alt="Screenshot 2023-12-15 at 15 09 16" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/a0dcc5f1-f9f1-4742-9594-29e4b04260bb"></p>
 
 
 
