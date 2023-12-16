@@ -1,5 +1,23 @@
 # onlineTiny2023
- 
+## Latency and Power Measurements
+### model
+1. ultra: onlineTiny2023/saved_models/ultra/onnx/fold_1_pre_combination_fullvalid_b32.onnx
+2. qvar: onlineTiny2023/saved_models/qvar/onnx/fold_1_pre_combination_fullvalid_b32.onnx
+3. gym: onlineTiny2023/saved_models/gym/onnx/fold_1_pre_combination_fullvalid_b32_s20.onnx
+### latency and power
+[stm32F7, GAP9] x different operating frequency and voltage 
+#### latency
+1. latency per inference
+2. latency per parameter update
+#### power
+1. energy per inference
+2. power/energy efficiency?
+### path of changed files
+1. CNN_Defines_fp16.h: gap_sdk_private-master/tools/autotiler_v3/CNN_Defines_fp16.h
+2. CNN_MatMul_Conv_fp16.c: gap_sdk_private-master/tools/autotiler_v3/CNN_MatMul_Conv_fp16.c
+3. CNN_SoftMax_fp16.c: gap_sdk_private-master/tools/autotiler_v3/CNN_SoftMax_fp16.c
+4. FastFloatApprox.h: gap_sdk_private-master/tools/autotiler_v3/DSP_Libraries/FastFloatApprox.h
+
 ## Python
 3.9.12
 ## PyTorch
@@ -9,7 +27,7 @@
 - QVAR from PBL
 - Ultra https://github.com/kangpx/40khz-ultrasonicDHGR-onlineSemi
 
-For convenience, the datasets can be accessed by downloading this zip file:) https://drive.google.com/file/d/1I9WCNklWV-WQoGdczSDc6fP-PqAUBiJB/view?usp=sharing
+For convenience, the datasets can be accessed by downloading this zip file:) https://drive.google.com/file/d/16LG2n-HL6iRwwSp0ecCHfA3dEQ5ukCyj/view?usp=sharing
 ## Saved Models
 The model topology is from [1] and shown in the following figure:
 <p align="center"><img width="310" alt="Screenshot 2023-08-20 at 22 27 59" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/ab6f4c5d-2c19-4714-888c-034a19d46240"></p>
@@ -144,37 +162,33 @@ To run the project (taking ultra project as example):
 1. Setup necessary environments:
  >cd xxx/gap_sdk_private-master && source sourceme.sh && conda activate gap
 2. Run NNTool script to generate ATmodel, which should generate the file `UltraModel.c`:
- >python nntool_script_ultra.py --mode=generate_at_model --trained_model PRE_TRAINED_MODEL_PATH
-3. Fix some bugs in `UltraModel.c`: add `tensors/` as prefix to each path to the tensor files, e.g., at line 135:
- change `...ConstInfo("Conv_0_weights.tensor", 1, ...` to `...ConstInfo("tensors/Conv_0_weights.tensor", 1, ...`
+ >python nntool_script_ultra.py --mode=generate_at_model --trained_model PRE_TRAINED_MODEL_PATH_OF_FOLD_X
+3. Specify the value of current fold in Ultra.h:
+"#define FOLD X" at line 22
+4. Cmake build to generate C-kernels, compile and run the code:
+>cmake -B build
 
-where `tensors` is the directory designated in the NNTool script to store the tensors, it is ignored in the generated ATModel due to some unknown reason.
+>cmake --build build --target run
 
-4. Run AutoTiler to generate executable network on GAP9:
->make clean
+5. Clean up.
+>rm -rf build
 
->make GenUltra
-
->./GenUltra
-
-5. Compile and run the code on GVSOC.
->make all run platform=gvsoc
+>rm *.tensor
 
 ### Performance Evaluation
-#### Ultra Dataset (OUTDATED)
+#### Ultra Dataset
 lr=0.002, momentum=0.5, 1 epoch of online training using user samples, full validation during pre-training. 
 
 fastexp with underflow check:
-<p align="center"><img width="840" alt="Screenshot 2023-09-19 at 16 00 12" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/dac50123-085d-4846-a800-44af74867c09"></p>
+<p align="center"><img width="472" alt="Screenshot 2023-12-16 at 17 28 36" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/f020572b-7395-43db-a475-111ef5de7ca7"></p>
 
-#### Qvar Dataset (OUTDATED)
+
+#### Qvar Dataset
 lr=0.002, momentum=0.5, 5 epoches of online training using user samples, full validation during pre-training.
 
 fastexp with underflow check:
-<p align="center"><img width="851" alt="Screenshot 2023-09-19 at 16 00 51" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/ddcf9150-6dc0-4c6f-9d0a-a76600e4c6bd"></p>
+<p align="center"><img width="464" alt="Screenshot 2023-12-16 at 17 29 04" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/6e1afc1b-4f46-4405-8f06-a0fb028d6860"></p>
 
-fasterexp:
-<p align="center"><img width="852" alt="Screenshot 2023-09-19 at 16 02 17" src="https://github.com/kangpx/onlineTiny2023/assets/118830544/adc66236-c348-4163-976c-d5827e6054db"></p>
 
 #### Gym Dataset
 lr=0.002, momentum=0.9, 1 epoch of online training using user samples, full validation during pre-training.
