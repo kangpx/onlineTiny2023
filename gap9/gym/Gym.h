@@ -18,7 +18,7 @@
 #define STACK_SIZE 1024
 #endif
 
-#define FOLD 3
+#define FOLD 1
 
 #define _PATH(prefix, core, suffix) prefix"/fold_"#core"/"suffix
 #define _TEST_SAMPLE_DIR(fold) _PATH("/home/kangpx/onlineTiny2023/datasets/incu_datasets/gym/c_input", fold, "test")

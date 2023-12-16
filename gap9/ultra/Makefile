@@ -50,7 +50,7 @@ UltraKernels.c: GenUltra
 model: UltraKernels.c
 
 clean::
-	$(RM) GenUltra UltraKernels.*
+	$(RM) GenUltra UltraKernels.* *.tensor
 
 .PHONY: model clean
 

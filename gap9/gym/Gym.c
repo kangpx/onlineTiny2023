@@ -91,7 +91,7 @@ int main(void)
     // ------------------------------------------------------------------//
     //                               test                               //
     // ------------------------------------------------------------------//
-/*    for (unsigned int sample_idx = 0; sample_idx < N_TEST_SAMPLE; sample_idx++){
+    for (unsigned int sample_idx = 0; sample_idx < N_TEST_SAMPLE; sample_idx++){
         y_test_real[sample_idx] = 0xfe;
         y_test_pred[sample_idx] = 0xff;
     }
@@ -99,13 +99,13 @@ int main(void)
         triplet_init(TEST_SAMPLE_DIR, sample_idx, OT_DISABLE);
         y_test_real[sample_idx] = y_real;
 
-        pi_cluster_send_task_to_cl(&cluster_dev, pi_cluster_task(&cl_task, inference, &y_pred));
+        pi_cluster_send_task_to_cl(&cluster_dev, pi_cluster_task(&cl_task, (void *)inference, &y_pred));
         y_test_pred[sample_idx] = y_pred;
 
         printf("TEST--idx = %lu/%lu, y_real/y_pred = %lu/%lu, accuracy=%f\n", sample_idx+1, N_TEST_SAMPLE, y_real, y_pred, accuracy_score(sample_idx+1));
     }
     printf("Accuracy: %f\n", accuracy_score(N_TEST_SAMPLE));
-*/
+
     //------------------------------------------------------------------//
     //                         online training                          //
     //------------------------------------------------------------------//
@@ -113,9 +113,9 @@ int main(void)
         for (unsigned int sample_idx = 0; sample_idx < N_INCU_SAMPLE; sample_idx++){
             triplet_init(INCU_SAMPLE_DIR, sample_idx, OT_ENABLE);
 
-            pi_cluster_send_task_to_cl(&cluster_dev, pi_cluster_task(&cl_task, inference, &y_pred));
+            pi_cluster_send_task_to_cl(&cluster_dev, pi_cluster_task(&cl_task, (void *)inference, &y_pred));
 
-            pi_cluster_send_task_to_cl(&cluster_dev, pi_cluster_task(&cl_task, ot_update_chunk_parallel, NULL));
+            pi_cluster_send_task_to_cl(&cluster_dev, pi_cluster_task(&cl_task, (void *)ot_update_chunk_parallel, NULL));
 
             printf("INCU--epoch=%lu/%lu, idx = %lu/%lu, y_real/y_pred = %lu/%lu\n", epoch+1, 1, sample_idx+1, N_INCU_SAMPLE, y_real, y_pred);
         }
@@ -133,7 +133,7 @@ int main(void)
 
         y_test_real[sample_idx] = y_real;
 
-        pi_cluster_send_task_to_cl(&cluster_dev, pi_cluster_task(&cl_task, inference, &y_pred));
+        pi_cluster_send_task_to_cl(&cluster_dev, pi_cluster_task(&cl_task, (void *)inference, &y_pred));
         y_test_pred[sample_idx] = y_pred;
 
         printf("TEST--idx = %lu/%lu, y_real/y_pred = %lu/%lu, accuracy=%f\n", sample_idx + 1, N_TEST_SAMPLE, y_real, y_pred, accuracy_score(sample_idx+1));
@@ -191,7 +191,7 @@ static void readXYfromFloat32File(char *fileName, unsigned int xSize, unsigned i
     unsigned char *inputBuf = (unsigned char *)__ALLOC_L2((xSize + ySize) * 4); // x4 because of float32
     if (inputBuf == NULL){
         printf("Malloc failed when loading data\n");
-        return -1;
+        return;
     }
     
     __SEEK(File, 0); 
@@ -200,14 +200,14 @@ static void readXYfromFloat32File(char *fileName, unsigned int xSize, unsigned i
     unsigned char *pInputBuf = inputBuf;
     while(remainBytes > 0){
         __int_ssize_t len = __READ(File, pInputBuf, remainBytes);
-        if (!len) return 1;
+        if (!len) return;
         remainBytes -= len;
         pInputBuf += len;
     }
 
-    for (int i=0; i<xSize; i++)
+    for (unsigned int i=0; i<xSize; i++)
         ((F16 *)pXBuffer)[i] = (F16)(((float *)inputBuf)[i]);
-    for (int i=0; i<ySize; i++)
+    for (unsigned int i=0; i<ySize; i++)
         ((unsigned int *)pYBuffer)[i] = (unsigned int)(((float *)inputBuf)[xSize+i]);
     __FREE_L2(inputBuf, (xSize+ySize)*4);
     __CLOSE(File);
@@ -216,7 +216,7 @@ static void readXYfromFloat32File(char *fileName, unsigned int xSize, unsigned i
 
 static void fetch_input(char *sample_src_, unsigned int sample_idx_)
 {
-    for (int i=0; i<sizeof(sample_path); i++)
+    for (unsigned int i=0; i<sizeof(sample_path); i++)
         sample_path[i] = 0;
     sprintf(sample_path, "%s/%lu.input", sample_src_, sample_idx_);
     printf("input_path=%s ", sample_path);

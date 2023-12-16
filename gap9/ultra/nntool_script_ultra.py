@@ -26,7 +26,7 @@ def create_parser():
                         help="Use FP16 kernels for more numerical precision")
     parser.add_argument('--fp32', default=False, action="store_true",
                         help="Use FP32 kernels for more numerical precision")
-    parser.add_argument('--tensors_dir', default='tensors',
+    parser.add_argument('--tensors_dir', default='./',
                         help="Where nntool stores the weights/bias tensors dir (only used in generate and performance mode)")
     parser.add_argument('--at_model_path', default="UltraModel.c",
                         help="Path to the C autotiler model file to generate (only used in generate mode)")
@@ -87,7 +87,6 @@ def main():
         quant_opts={
             "scheme": "FLOAT",
             "float_type": "bfloat16",
-            "use_ne16": True,
         }
     elif args.fp32:
         quant_opts={

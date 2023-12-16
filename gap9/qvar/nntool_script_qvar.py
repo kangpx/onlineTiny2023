@@ -22,7 +22,7 @@ def create_parser():
     parser.add_argument('--ne16', default=False, action="store_true", help="Use NE16 HW accelerator in GAP9")
     parser.add_argument('--fp16', default=True, action="store_true", help="Use FP16 kernels for more numerical precision")
     parser.add_argument('--fp32', default=False, action="store_true", help="Use FP32 kernels for more numerical precision")
-    parser.add_argument('--tensors_dir', default='tensors', help="Where nntool stores the weights/bias tensors dir (only used in generate and performance mode)")
+    parser.add_argument('--tensors_dir', default='./', help="Where nntool stores the weights/bias tensors dir (only used in generate and performance mode)")
     parser.add_argument('--at_model_path', default="QvarModel.c", help="Path to the C autotiler model file to generate (only used in generate mode)")
     parser.add_argument('--ram_type', default="AT_MEM_L3_DEFAULTRAM", choices=['AT_MEM_L3_HRAM', 'AT_MEM_L3_QSPIRAM', 'AT_MEM_L3_OSPIRAM', 'AT_MEM_L3_DEFAULTRAM'], help="Ram type to use during inference on platform (only used in generate and performance mode)")
     parser.add_argument('--flash_type', default="AT_MEM_L3_DEFAULTFLASH", choices=['AT_MEM_L3_HFLASH', 'AT_MEM_L3_QSPIFLASH', 'AT_MEM_L3_OSPIFLASH', 'AT_MEM_L3_MRAMFLASH', 'AT_MEM_L3_DEFAULTFLASH'], help="Flash type to use during inference (only used in generate and performance mode)")
@@ -72,7 +72,6 @@ def main():
         quant_opts={
             "scheme": "FLOAT",
             "float_type": "bfloat16",
-            "use_ne16": True,
         }
     elif args.fp32:
         quant_opts={
