@@ -11,7 +11,7 @@ import torch.optim as optim
 from torch.optim.lr_scheduler import CosineAnnealingLR, CosineAnnealingWarmRestarts
 from torch.utils.data import DataLoader, TensorDataset, WeightedRandomSampler
 import pandas as pd
-from dataman_ultra import CLASSES, Xy_TrainTest
+from dataman_ultra import CLASSES, Xy_TrainTest, Xy_TrainTest_Kfold
 from model_definitions import ResNetBackBone, Classifier, ResNet
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_score, recall_score
 from sklearn.model_selection import train_test_split
@@ -25,6 +25,33 @@ print(f'device: {device}')
 
 with open('../dataset_config.json', 'r') as json_file:
     dataset_config = json.load(json_file)
+
+
+def get_dataloader_kfold(fold):
+    ultra_dataset_root = dataset_config["ultra_dataset_root"]
+    x_train, y_train, x_test, y_test = Xy_TrainTest_Kfold(ultra_dataset_root, fold)
+    x_train, x_valid, y_train, y_valid = train_test_split(x_train, y_train, train_size=0.8, random_state=6507+fold)
+
+    train_dataset = TensorDataset(x_train, y_train)
+    valid_dataset = TensorDataset(x_valid, y_valid)
+    test_dataset = TensorDataset(x_test, y_test)
+
+    train_class_weights = torch.tensor([1.0 for _ in range(len(CLASSES))])
+
+    train_loader = DataLoader(train_dataset, shuffle=True, batch_size=64, drop_last=False)
+    valid_loader = DataLoader(valid_dataset, shuffle=False, batch_size=64, drop_last=False)
+    test_loader = DataLoader(test_dataset, shuffle=False, batch_size=64, drop_last=False)
+
+    dataset_summary = pd.DataFrame(index=CLASSES+['total'],
+                                    data={'# train':[(y_train == i_cls).sum().item() for i_cls in range(len(CLASSES))] + [len(train_dataset)], 
+                                          '# valid':[(y_valid == i_cls).sum().item() for i_cls in range(len(CLASSES))] + [len(valid_dataset)],
+                                          '# test':[(y_test == i_cls).sum().item() for i_cls in range(len(CLASSES))] + [len(test_dataset)],})
+    print(dataset_summary)
+    print('class_weights:')
+    for i_cls, cls in enumerate(CLASSES):
+        print(f'{cls}: {train_class_weights[i_cls]}')
+
+    return train_loader, valid_loader, test_loader, None, None, train_class_weights
 
 
 def get_dataloader(fold, include_incnu=True):
@@ -379,19 +406,20 @@ def main():
     include_incnu = False
 
     for fold in range(0, 7):
-        bb_pre_path       = f'../saved_models/ultra/pt/fold_{fold}_pre_backbone_{"fullvalid" if not include_incnu else "partvalid"}_b32.pt'
-        clf_pre_path      = f'../saved_models/ultra/pt/fold_{fold}_pre_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32.pt'
-        cmb_pre_onnx_path = f'../saved_models/ultra/onnx/fold_{fold}_pre_combination_{"fullvalid" if not include_incnu else "partvalid"}_b32.onnx' 
-        clf_incu_path     = f'../saved_models/ultra/pt/fold_{fold}_incu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32.pt'
-        clf_incnu_path    = f'../saved_models/ultra/pt/fold_{fold}_incnu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32.pt'
-        his_pre_path      = f'../histories/ultra/fold_{fold}_pre_{"fullvalid" if not include_incnu else "partvalid"}_b32.pkl'
-        his_incu_path     = f'../histories/ultra/fold_{fold}_incu_{"fullvalid" if not include_incnu else "partvalid"}_b32.pkl'
-        his_incnu_path    = f'../histories/ultra/fold_{fold}_incnu_{"fullvalid" if not include_incnu else "partvalid"}_b32.pkl'
+        bb_pre_path       = f'../saved_models/ultra/pt/fold_{fold}_pre_backbone_{"fullvalid" if not include_incnu else "partvalid"}_b32_kfold.pt'
+        clf_pre_path      = f'../saved_models/ultra/pt/fold_{fold}_pre_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32_kfold.pt'
+        cmb_pre_onnx_path = f'../saved_models/ultra/onnx/fold_{fold}_pre_combination_{"fullvalid" if not include_incnu else "partvalid"}_b32_kfold.onnx' 
+        # clf_incu_path     = f'../saved_models/ultra/pt/fold_{fold}_incu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32.pt'
+        # clf_incnu_path    = f'../saved_models/ultra/pt/fold_{fold}_incnu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32.pt'
+        his_pre_path      = f'../histories/ultra/fold_{fold}_pre_{"fullvalid" if not include_incnu else "partvalid"}_b32_kfold.pkl'
+        # his_incu_path     = f'../histories/ultra/fold_{fold}_incu_{"fullvalid" if not include_incnu else "partvalid"}_b32.pkl'
+        # his_incnu_path    = f'../histories/ultra/fold_{fold}_incnu_{"fullvalid" if not include_incnu else "partvalid"}_b32.pkl'
 
         #--------------------------------------------------------------------#
         #                          data preparation                          #
         #--------------------------------------------------------------------#
-        train_loader, valid_loader, test_loader, incu_loader, incnu_loader, class_weights = get_dataloader(fold, include_incnu)
+        # train_loader, valid_loader, test_loader, incu_loader, incnu_loader, class_weights = get_dataloader(fold, include_incnu)
+        train_loader, valid_loader, test_loader, incu_loader, incnu_loader, class_weights = get_dataloader_kfold(fold)
 
         #--------------------------------------------------------------------#
         #                            pre-training                            #
@@ -424,131 +452,133 @@ def main():
                          )
         print(f'combination has been converted to onnx and stored in {cmb_pre_onnx_path}')
 
-        #--------------------------------------------------------------------#
-        #                         inc-training-user                          #
-        #--------------------------------------------------------------------#
-        backbone, classifier = load_model(bb_pre_path, clf_pre_path)
-        classifier, history = inc_training(backbone, classifier, incu_loader, test_loader, clf_incu_path, his_incu_path, class_weights)
-
-        #--------------------------------------------------------------------#
-        #                    testing of inc-training-user                    #
-        #--------------------------------------------------------------------#
-        backbone, classifier = load_model(bb_pre_path, clf_incu_path)
-        conf_mat_incu, accuracy_incu, precision_incu, recall_incu, f1_incu = testing(backbone, classifier, test_loader, class_weights)
-
-        #--------------------------------------------------------------------#
-        #                        inc-training-nonuser                        #
-        #--------------------------------------------------------------------#
-        backbone, classifier = load_model(bb_pre_path, clf_pre_path)
-        classifier, history = inc_training(backbone, classifier, incnu_loader, test_loader, clf_incnu_path, his_incnu_path, class_weights)
-
-        #--------------------------------------------------------------------#
-        #                  testing of inc-training-nonuser                   #
-        #--------------------------------------------------------------------#
-        backbone, classifier = load_model(bb_pre_path, clf_incnu_path)
-        conf_mat_incnu, accuracy_incnu, precision_incnu, recall_incnu, f1_incnu = testing(backbone, classifier, test_loader, class_weights)
+        # #--------------------------------------------------------------------#
+        # #                         inc-training-user                          #
+        # #--------------------------------------------------------------------#
+        # backbone, classifier = load_model(bb_pre_path, clf_pre_path)
+        # classifier, history = inc_training(backbone, classifier, incu_loader, test_loader, clf_incu_path, his_incu_path, class_weights)
+        #
+        # #--------------------------------------------------------------------#
+        # #                    testing of inc-training-user                    #
+        # #--------------------------------------------------------------------#
+        # backbone, classifier = load_model(bb_pre_path, clf_incu_path)
+        # conf_mat_incu, accuracy_incu, precision_incu, recall_incu, f1_incu = testing(backbone, classifier, test_loader, class_weights)
+        #
+        # #--------------------------------------------------------------------#
+        # #                        inc-training-nonuser                        #
+        # #--------------------------------------------------------------------#
+        # backbone, classifier = load_model(bb_pre_path, clf_pre_path)
+        # classifier, history = inc_training(backbone, classifier, incnu_loader, test_loader, clf_incnu_path, his_incnu_path, class_weights)
+        #
+        # #--------------------------------------------------------------------#
+        # #                  testing of inc-training-nonuser                   #
+        # #--------------------------------------------------------------------#
+        # backbone, classifier = load_model(bb_pre_path, clf_incnu_path)
+        # conf_mat_incnu, accuracy_incnu, precision_incnu, recall_incnu, f1_incnu = testing(backbone, classifier, test_loader, class_weights)
 
         #--------------------------------------------------------------------#
         #                testing comparison between pre & inc                #
         #--------------------------------------------------------------------#
         print(conf_mat_pre)
-        print(conf_mat_incu)
-        print(conf_mat_incnu)
+        # print(conf_mat_incu)
+        # print(conf_mat_incnu)
+        
+        print(accuracy_pre)
 
-        df_classwise = pd.DataFrame(index=CLASSES, data={'precision_pre':precision_pre[0],
-                                                         'precision_pre+incu':precision_incu[0],
-                                                         'precision_pre+incnu':precision_incnu[0],
-                                                         'recall_pre':recall_pre[0],
-                                                         'recall_pre+incu':recall_incu[0],
-                                                         'recall_pre+incnu':recall_incnu[0],
-                                                         'f1_pre':f1_pre[0],
-                                                         'f1_pre+incu':f1_incu[0],
-                                                         'f1_pre+incnu':f1_incnu[0]})
-        print(df_classwise.round(4))
-        foldlog_classwise_pre.append((precision_pre[0], recall_pre[0], f1_pre[0]))
-        foldlog_classwise_incu.append((precision_incu[0], recall_incu[0], f1_incu[0]))
-        foldlog_classwise_incnu.append((precision_incnu[0], recall_incnu[0], f1_incnu[0]))
-
-        df_overall = pd.DataFrame(index=['accuracy','macro_precision', 'weighted_precision', 'macro_recall', 'weighted_recall', 'macro_f1', 'weighted_f1'],
-                                  data={'pre':[accuracy_pre, precision_pre[1], precision_pre[2], recall_pre[1], recall_pre[2], f1_pre[1], f1_pre[2]],
-                                        'pre+incu':[accuracy_incu, precision_incu[1], precision_incu[2], recall_incu[1], recall_incu[2], f1_incu[1], f1_incu[2]],
-                                        'pre+incnu':[accuracy_incnu, precision_incnu[1], precision_incnu[2], recall_incnu[1], recall_incnu[2], f1_incnu[1], f1_incnu[2]]}) 
-        print(df_overall.round(4))
-
-        foldlog_pre.loc[len(foldlog_pre.index)] = [accuracy_pre, precision_pre[1], precision_pre[2], recall_pre[1], recall_pre[2], f1_pre[1], f1_pre[2]] 
-        foldlog_incu.loc[len(foldlog_incu.index)] = [accuracy_incu, precision_incu[1], precision_incu[2], recall_incu[1], recall_incu[2], f1_incu[1], f1_incu[2]] 
-        foldlog_incnu.loc[len(foldlog_incnu.index)] = [accuracy_incnu, precision_incnu[1], precision_incnu[2], recall_incnu[1], recall_incnu[2], f1_incnu[1], f1_incnu[2]] 
-
-
-    print('mean performances of all folds:')
-    df_allfolds = pd.DataFrame(index=['accuracy','macro_precision', 'weighted_precision', 'macro_recall', 'weighted_recall', 'macro_f1', 'weighted_f1'],
-                              data={'pre': foldlog_pre.mean().values.tolist(),
-                                    'pre+onl(user)':foldlog_incu.mean().values.tolist(),
-                                    'pre+onl(nonuser)':foldlog_incnu.mean().values.tolist()}) 
-    print(df_allfolds.round(4))
-   
-    # foldwise statistics
-    fold_labels = [f'fold_{i}' for i in range(7)]
-    fold_metrics = {
-        'accuracy_pre': [foldlog_pre.loc[i, 'accuracy'].round(4) for i in range(7)],
-        'accuracy_onl_user': [foldlog_incu.loc[i, 'accuracy'].round(4) for i in range(7)],
-        'accuray_onl_nonuser': [foldlog_incnu.loc[i, 'accuracy'].round(4) for i in range(7)],
-        'macro_f1_pre': [foldlog_pre.loc[i, 'macro_f1'].round(4) for i in range(7)],
-        'macro_f1_onl_user': [foldlog_incu.loc[i, 'macro_f1'].round(4) for i in range(7)],
-        'macro_f1_onl_nonuser': [foldlog_incnu.loc[i, 'macro_f1'].round(4) for i in range(7)],
-    } 
-     
-    x = np.array([2*i for i in range(1, 8)])
-    width = 0.3
-    multiplier = 0
-   
-    fig, ax = plt.subplots(layout='constrained', figsize=(35, 10))
-   
-    for attribute, measurement in fold_metrics.items():
-        offset = width * multiplier
-        rects = ax.bar(x + offset, measurement, width, label=attribute)
-        ax.bar_label(rects, padding=2)
-        multiplier += 1
-    
-    ax.set_xticks(x + width, fold_labels, fontsize=15)
-    ax.tick_params(axis='y', labelsize=15)
-    ax.legend(loc='upper left', ncol=2, fontsize=15)
-    ax.set_ylim(0.8, 1)
-    #
-    plt.savefig(f'../figures/foldwise_ultrasonic_{"fullvalid" if not include_incnu else "partvalid"}.jpg')
-   
-    # classwise statistics
-    class_labels = CLASSES
-    class_metrics = {
-        'precision_pre': [np.round(np.mean([foldlog_classwise_pre[i_fold][0][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)],
-        'precision_onl_user': [np.round(np.mean([foldlog_classwise_incu[i_fold][0][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)],
-        'precision_onl_nonuser': [np.round(np.mean([foldlog_classwise_incnu[i_fold][0][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)],
-        'recall_pre': [np.round(np.mean([foldlog_classwise_pre[i_fold][1][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)],
-        'recall_onl_user': [np.round(np.mean([foldlog_classwise_incu[i_fold][1][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)],
-        'recall_onl_nonuser': [np.round(np.mean([foldlog_classwise_incnu[i_fold][1][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)],
-        'f1_pre': [np.round(np.mean([foldlog_classwise_pre[i_fold][2][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)],
-        'f1_onl_user': [np.round(np.mean([foldlog_classwise_incu[i_fold][2][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)],
-        'f1_onl_nonuser': [np.round(np.mean([foldlog_classwise_incnu[i_fold][2][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)]
-    } 
-     
-    x = np.array([3*i for i in range(8)])
-    width = 0.3
-    multiplier = 0
-    
-    fig, ax = plt.subplots(layout='constrained', figsize=(55, 10))
-    
-    for attribute, measurement in class_metrics.items():
-        offset = width * multiplier
-        rects = ax.bar(x + offset, measurement, width, label=attribute)
-        ax.bar_label(rects, padding=2)
-        multiplier += 1
-    
-    ax.set_xticks(x + width, class_labels, fontsize=15)
-    ax.tick_params(axis='y', labelsize=15)
-    ax.legend(loc='upper left', ncol=1, fontsize=15)
-    ax.set_ylim(0.8, 1)
-    
-    plt.savefig(f'../figures/classwise_ultrasonic_{"fullvalid" if not include_incnu else "partvalid"}.jpg')
+   #      df_classwise = pd.DataFrame(index=CLASSES, data={'precision_pre':precision_pre[0],
+   #                                                       'precision_pre+incu':precision_incu[0],
+   #                                                       'precision_pre+incnu':precision_incnu[0],
+   #                                                       'recall_pre':recall_pre[0],
+   #                                                       'recall_pre+incu':recall_incu[0],
+   #                                                       'recall_pre+incnu':recall_incnu[0],
+   #                                                       'f1_pre':f1_pre[0],
+   #                                                       'f1_pre+incu':f1_incu[0],
+   #                                                       'f1_pre+incnu':f1_incnu[0]})
+   #      print(df_classwise.round(4))
+   #      foldlog_classwise_pre.append((precision_pre[0], recall_pre[0], f1_pre[0]))
+   #      foldlog_classwise_incu.append((precision_incu[0], recall_incu[0], f1_incu[0]))
+   #      foldlog_classwise_incnu.append((precision_incnu[0], recall_incnu[0], f1_incnu[0]))
+   #
+   #      df_overall = pd.DataFrame(index=['accuracy','macro_precision', 'weighted_precision', 'macro_recall', 'weighted_recall', 'macro_f1', 'weighted_f1'],
+   #                                data={'pre':[accuracy_pre, precision_pre[1], precision_pre[2], recall_pre[1], recall_pre[2], f1_pre[1], f1_pre[2]],
+   #                                      'pre+incu':[accuracy_incu, precision_incu[1], precision_incu[2], recall_incu[1], recall_incu[2], f1_incu[1], f1_incu[2]],
+   #                                      'pre+incnu':[accuracy_incnu, precision_incnu[1], precision_incnu[2], recall_incnu[1], recall_incnu[2], f1_incnu[1], f1_incnu[2]]}) 
+   #      print(df_overall.round(4))
+   #
+   #      foldlog_pre.loc[len(foldlog_pre.index)] = [accuracy_pre, precision_pre[1], precision_pre[2], recall_pre[1], recall_pre[2], f1_pre[1], f1_pre[2]] 
+   #      foldlog_incu.loc[len(foldlog_incu.index)] = [accuracy_incu, precision_incu[1], precision_incu[2], recall_incu[1], recall_incu[2], f1_incu[1], f1_incu[2]] 
+   #      foldlog_incnu.loc[len(foldlog_incnu.index)] = [accuracy_incnu, precision_incnu[1], precision_incnu[2], recall_incnu[1], recall_incnu[2], f1_incnu[1], f1_incnu[2]] 
+   #
+   #
+   #  print('mean performances of all folds:')
+   #  df_allfolds = pd.DataFrame(index=['accuracy','macro_precision', 'weighted_precision', 'macro_recall', 'weighted_recall', 'macro_f1', 'weighted_f1'],
+   #                            data={'pre': foldlog_pre.mean().values.tolist(),
+   #                                  'pre+onl(user)':foldlog_incu.mean().values.tolist(),
+   #                                  'pre+onl(nonuser)':foldlog_incnu.mean().values.tolist()}) 
+   #  print(df_allfolds.round(4))
+   # 
+   #  # foldwise statistics
+   #  fold_labels = [f'fold_{i}' for i in range(7)]
+   #  fold_metrics = {
+   #      'accuracy_pre': [foldlog_pre.loc[i, 'accuracy'].round(4) for i in range(7)],
+   #      'accuracy_onl_user': [foldlog_incu.loc[i, 'accuracy'].round(4) for i in range(7)],
+   #      'accuray_onl_nonuser': [foldlog_incnu.loc[i, 'accuracy'].round(4) for i in range(7)],
+   #      'macro_f1_pre': [foldlog_pre.loc[i, 'macro_f1'].round(4) for i in range(7)],
+   #      'macro_f1_onl_user': [foldlog_incu.loc[i, 'macro_f1'].round(4) for i in range(7)],
+   #      'macro_f1_onl_nonuser': [foldlog_incnu.loc[i, 'macro_f1'].round(4) for i in range(7)],
+   #  } 
+   #   
+   #  x = np.array([2*i for i in range(1, 8)])
+   #  width = 0.3
+   #  multiplier = 0
+   # 
+   #  fig, ax = plt.subplots(layout='constrained', figsize=(35, 10))
+   # 
+   #  for attribute, measurement in fold_metrics.items():
+   #      offset = width * multiplier
+   #      rects = ax.bar(x + offset, measurement, width, label=attribute)
+   #      ax.bar_label(rects, padding=2)
+   #      multiplier += 1
+   #  
+   #  ax.set_xticks(x + width, fold_labels, fontsize=15)
+   #  ax.tick_params(axis='y', labelsize=15)
+   #  ax.legend(loc='upper left', ncol=2, fontsize=15)
+   #  ax.set_ylim(0.8, 1)
+   #  #
+   #  plt.savefig(f'../figures/foldwise_ultrasonic_{"fullvalid" if not include_incnu else "partvalid"}.jpg')
+   # 
+   #  # classwise statistics
+   #  class_labels = CLASSES
+   #  class_metrics = {
+   #      'precision_pre': [np.round(np.mean([foldlog_classwise_pre[i_fold][0][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)],
+   #      'precision_onl_user': [np.round(np.mean([foldlog_classwise_incu[i_fold][0][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)],
+   #      'precision_onl_nonuser': [np.round(np.mean([foldlog_classwise_incnu[i_fold][0][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)],
+   #      'recall_pre': [np.round(np.mean([foldlog_classwise_pre[i_fold][1][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)],
+   #      'recall_onl_user': [np.round(np.mean([foldlog_classwise_incu[i_fold][1][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)],
+   #      'recall_onl_nonuser': [np.round(np.mean([foldlog_classwise_incnu[i_fold][1][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)],
+   #      'f1_pre': [np.round(np.mean([foldlog_classwise_pre[i_fold][2][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)],
+   #      'f1_onl_user': [np.round(np.mean([foldlog_classwise_incu[i_fold][2][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)],
+   #      'f1_onl_nonuser': [np.round(np.mean([foldlog_classwise_incnu[i_fold][2][i_cls] for i_fold in range(7)]), 4) for i_cls in range(8)]
+   #  } 
+   #   
+   #  x = np.array([3*i for i in range(8)])
+   #  width = 0.3
+   #  multiplier = 0
+   #  
+   #  fig, ax = plt.subplots(layout='constrained', figsize=(55, 10))
+   #  
+   #  for attribute, measurement in class_metrics.items():
+   #      offset = width * multiplier
+   #      rects = ax.bar(x + offset, measurement, width, label=attribute)
+   #      ax.bar_label(rects, padding=2)
+   #      multiplier += 1
+   #  
+   #  ax.set_xticks(x + width, class_labels, fontsize=15)
+   #  ax.tick_params(axis='y', labelsize=15)
+   #  ax.legend(loc='upper left', ncol=1, fontsize=15)
+   #  ax.set_ylim(0.8, 1)
+   #  
+   #  plt.savefig(f'../figures/classwise_ultrasonic_{"fullvalid" if not include_incnu else "partvalid"}.jpg')
 
 if __name__ == '__main__':
     main()

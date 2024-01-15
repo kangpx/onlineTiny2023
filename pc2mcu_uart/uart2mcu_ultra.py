@@ -86,12 +86,12 @@ def main():
     #--------------------------------------------------------------------#
     # y_pred_test_pre = trial(ser, x_test, y_test, False)
     # print(f'pre accuracy: {accuracy_score(y_test.tolist(), y_pred_test_pre)}')
-    for epoch in range(1):
-        _ = trial(ser, x_test[:1], np.array([2]), True) 
     # for epoch in range(1):
-    #     _ = trial(ser, x_incu, y_incu, True) 
-    # y_pred_test_incu = trial(ser, x_test, y_test, False)
-    # print(f'inc accuracy: {accuracy_score(y_test.tolist(), y_pred_test_incu)}')
+    #     _ = trial(ser, x_test[:1], np.array([2]), True) 
+    for epoch in range(1):
+        _ = trial(ser, x_incu, y_incu, True) 
+    y_pred_test_incu = trial(ser, x_test, y_test, False)
+    print(f'inc accuracy: {accuracy_score(y_test.tolist(), y_pred_test_incu)}')
 
     #--------------------------------------------------------------------#
     #                        close serial object                         #

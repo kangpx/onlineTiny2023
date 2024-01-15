@@ -1,347 +1,347 @@
 Neural Network Tools for STM32 family v1.7.0 (stm.ai v8.1.0-19520)
-Created date          : 2023-08-23 14:12:33
-Parameters            : generate --name combination -m /Users/kangpx/onlineTiny2023/saved_models/qvar/onnx/fold_20_pre_combination_fullvalid.onnx --type onnx --compression none --verbosity 1 --workspace /var/folders/xk/ysyqb_jd2dld7w3pmzqmjf0m0000gn/T/mxAI_workspace161150485935835473749243421222398 --output /Users/kangpx/.stm32cubemx/combination_output --allocate-inputs --series stm32f7 --allocate-outputs --split-weights --no-onnx-io-transpose
+Created date          : 2024-01-04 15:06:25
+Parameters            : generate --name combination -m /Users/kangpx/onlineTiny2023/saved_models/qvar/onnx/fold_1_pre_combination_fullvalid_b32.onnx --type onnx --compression none --verbosity 1 --workspace /var/folders/xk/ysyqb_jd2dld7w3pmzqmjf0m0000gn/T/mxAI_workspace1826793605741257353948882073328114 --output /Users/kangpx/.stm32cubemx/combination_output --allocate-inputs --series stm32f7 --allocate-outputs --split-weights --no-onnx-io-transpose
 
 Exec/report summary (generate)
---------------------------------------------------------------------------------------------------------------------------
-model file         :   /Users/kangpx/onlineTiny2023/saved_models/qvar/onnx/fold_20_pre_combination_fullvalid.onnx         
-type               :   onnx                                                                                               
-c_name             :   combination                                                                                        
-compression        :   none                                                                                               
-options            :   allocate-inputs, allocate-outputs, split-weights                                                   
-optimization       :   balanced                                                                                           
-target/series      :   stm32f7                                                                                            
-workspace dir      :   /var/folders/xk/ysyqb_jd2dld7w3pmzqmjf0m0000gn/T/mxAI_workspace161150485935835473749243421222398   
-output dir         :   /Users/kangpx/.stm32cubemx/combination_output                                                      
-model_fmt          :   float                                                                                              
-model_name         :   fold_20_pre_combination_fullvalid                                                                  
-model_hash         :   04d75b450525e49bc596390780c7e5ca                                                                   
-params #           :   138,570 items (541.29 KiB)                                                                         
---------------------------------------------------------------------------------------------------------------------------
-input 1/1          :   'modelInput' (domain:activations/**default**)                                                      
-                   :   360 items, 1.41 KiB, ai_float, float, (1,40,9)                                                     
-output 1/1         :   'modelOutput' (domain:activations/**default**)                                                     
-                   :   10 items, 40 B, ai_float, float, (1,10)                                                            
-macc               :   4,552,480                                                                                          
-weights (ro)       :   554,280 B (541.29 KiB) (22 segments)                                                               
-activations (rw)   :   22,016 B (21.50 KiB) (1 segment) *                                                                 
-ram (total)        :   22,016 B (21.50 KiB) = 22,016 + 0 + 0                                                              
---------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------
+model file         :   /Users/kangpx/onlineTiny2023/saved_models/qvar/onnx/fold_1_pre_combination_fullvalid_b32.onnx       
+type               :   onnx                                                                                                
+c_name             :   combination                                                                                         
+compression        :   none                                                                                                
+options            :   allocate-inputs, allocate-outputs, split-weights                                                    
+optimization       :   balanced                                                                                            
+target/series      :   stm32f7                                                                                             
+workspace dir      :   /var/folders/xk/ysyqb_jd2dld7w3pmzqmjf0m0000gn/T/mxAI_workspace1826793605741257353948882073328114   
+output dir         :   /Users/kangpx/.stm32cubemx/combination_output                                                       
+model_fmt          :   float                                                                                               
+model_name         :   fold_1_pre_combination_fullvalid_b32                                                                
+model_hash         :   591b6fd4460efba4e121a87b22f32f86                                                                    
+params #           :   41,642 items (162.66 KiB)                                                                           
+---------------------------------------------------------------------------------------------------------------------------
+input 1/1          :   'modelInput' (domain:activations/**default**)                                                       
+                   :   360 items, 1.41 KiB, ai_float, float, (1,40,9)                                                      
+output 1/1         :   'modelOutput' (domain:activations/**default**)                                                      
+                   :   10 items, 40 B, ai_float, float, (1,10)                                                             
+macc               :   1,170,400                                                                                           
+weights (ro)       :   166,568 B (162.66 KiB) (22 segments)                                                                
+activations (rw)   :   11,008 B (10.75 KiB) (1 segment) *                                                                  
+ram (total)        :   11,008 B (10.75 KiB) = 11,008 + 0 + 0                                                               
+---------------------------------------------------------------------------------------------------------------------------
 (*) 'input'/'output' buffers can be used from the activations buffer
 
-Model name - fold_20_pre_combination_fullvalid ['modelInput'] ['modelOutput']
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-m_id   layer (type,original)                      oshape                 param/size            macc           connected to   | c_size              c_macc   c_type                 
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-30     classifier_fc_weight (Placeholder, Gemm)   [h:2560,h:2560,c:10]   25,600/102,400                                      | -102,400(-100.0%)            
-       classifier_fc_bias (Placeholder, Gemm)     [c:10]                 10/40                                               | -40(-100.0%)                 
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-0      modelInput (Input, )                       [b:1,h:40,h:40,c:9]                                                        |                              
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-1      input_4 (Conv2D, Conv)                     [b:1,h:40,h:40,c:64]   1,792/7,168         69,184             modelInput   |                              conv2d_of32[0]         
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-2      onnxConv_75 (Nonlinearity, Relu)           [b:1,h:40,h:40,c:64]                        2,560                input_4   |                              nl_of32[1]             
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-3      input_12 (Conv2D, Conv)                    [b:1,h:40,h:40,c:64]   12,352/49,408      491,584            onnxConv_75   |                              conv2d_of32[2]         
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-4      onnxConv_78 (Nonlinearity, Relu)           [b:1,h:40,h:40,c:64]                        2,560               input_12   |                              nl_of32[3]             
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-5      input_20 (Conv2D, Conv)                    [b:1,h:40,h:40,c:64]   12,352/49,408      491,584            onnxConv_78   |                              conv2d_of32[4]         
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-6      onnxConv_81 (Nonlinearity, Relu)           [b:1,h:40,h:40,c:64]                        2,560               input_20   |                              nl_of32[5]             
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-7      onnxAdd_127 (Conv2D, Conv)                 [b:1,h:40,h:40,c:64]   12,352/49,408      491,584            onnxConv_81   |                              conv2d_of32[6]         
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-8      onnxRelu_84 (Eltwise, Add)                 [b:1,h:40,h:40,c:64]                        2,560            onnxAdd_127   |                              eltwise/sum_of32[7]    
-                                                                                                               onnxConv_75   | 
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-9      input_28 (Nonlinearity, Relu)              [b:1,h:40,h:40,c:64]                        2,560            onnxRelu_84   |                              nl_of32[8]             
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-10     input_36 (Conv2D, Conv)                    [b:1,h:40,h:40,c:64]   12,352/49,408      491,584               input_28   |                              conv2d_of32[9]         
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-11     onnxConv_88 (Nonlinearity, Relu)           [b:1,h:40,h:40,c:64]                        2,560               input_36   |                              nl_of32[10]            
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-12     input_44 (Conv2D, Conv)                    [b:1,h:40,h:40,c:64]   12,352/49,408      491,584            onnxConv_88   |                              conv2d_of32[11]        
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-13     onnxConv_91 (Nonlinearity, Relu)           [b:1,h:40,h:40,c:64]                        2,560               input_44   |                              nl_of32[12]            
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-14     onnxAdd_136 (Conv2D, Conv)                 [b:1,h:40,h:40,c:64]   12,352/49,408      491,584            onnxConv_91   |                              conv2d_of32[13]        
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-15     onnxRelu_94 (Eltwise, Add)                 [b:1,h:40,h:40,c:64]                        2,560            onnxAdd_136   |                              eltwise/sum_of32[14]   
-                                                                                                                  input_28   | 
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-16     input_52 (Nonlinearity, Relu)              [b:1,h:40,h:40,c:64]                        2,560            onnxRelu_94   |                              nl_of32[15]            
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-17     input_60 (Conv2D, Conv)                    [b:1,h:40,h:40,c:64]   12,352/49,408      491,584               input_52   |                              conv2d_of32[16]        
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-18     onnxConv_98 (Nonlinearity, Relu)           [b:1,h:40,h:40,c:64]                        2,560               input_60   |                              nl_of32[17]            
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-19     input_68 (Conv2D, Conv)                    [b:1,h:40,h:40,c:64]   12,352/49,408      491,584            onnxConv_98   |                              conv2d_of32[18]        
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-20     onnxConv_101 (Nonlinearity, Relu)          [b:1,h:40,h:40,c:64]                        2,560               input_68   |                              nl_of32[19]            
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-21     onnxAdd_145 (Conv2D, Conv)                 [b:1,h:40,h:40,c:64]   12,352/49,408      491,584           onnxConv_101   |                              conv2d_of32[20]        
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-22     onnxRelu_104 (Eltwise, Add)                [b:1,h:40,h:40,c:64]                        2,560            onnxAdd_145   |                              eltwise/sum_of32[21]   
-                                                                                                                  input_52   | 
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-23     input_76 (Nonlinearity, Relu)              [b:1,h:40,h:40,c:64]                        2,560           onnxRelu_104   |                              nl_of32[22]            
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-30     onnxGemm_115 (Reshape, Reshape)            [b:1,c:2560]                                                    input_76   |                              
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-31     input_80 (Gemm, Gemm)                      [b:1,c:10]                                 25,610           onnxGemm_115   | +102,440(+100.0%)            dense_of32[23]         
-                                                                                                      classifier_fc_weight   | 
-                                                                                                        classifier_fc_bias   | 
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-32     modelOutput (Nonlinearity, Softmax)        [b:1,c:10]                                    150               input_80   |                              nl_of32[o][24]         
------- ------------------------------------------ ---------------------- ---------------- --------- ---------------------- --- ------------------- -------- ---------------------- 
-model/c-model: macc=4,552,480/4,552,480  weights=554,280/554,280  activations=--/22,016 io=--/0
+Model name - fold_1_pre_combination_fullvalid_b32 ['modelInput'] ['modelOutput']
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+m_id   layer (type,original)                      oshape                 param/size           macc           connected to   | c_size             c_macc   c_type                 
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+24     classifier_fc_weight (Placeholder, Gemm)   [h:1280,h:1280,c:10]   12,800/51,200                                      | -51,200(-100.0%)            
+       classifier_fc_bias (Placeholder, Gemm)     [c:10]                 10/40                                              | -40(-100.0%)                
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+0      modelInput (Input, )                       [b:1,h:40,h:40,c:9]                                                       |                             
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+1      input_4 (Conv2D, Conv)                     [b:1,h:40,h:40,c:32]   896/3,584          34,592             modelInput   |                             conv2d_of32[0]         
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+2      onnxConv_75 (Nonlinearity, Relu)           [b:1,h:40,h:40,c:32]                       1,280                input_4   |                             nl_of32[1]             
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+3      input_12 (Conv2D, Conv)                    [b:1,h:40,h:40,c:32]   3,104/12,416      122,912            onnxConv_75   |                             conv2d_of32[2]         
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+4      onnxConv_78 (Nonlinearity, Relu)           [b:1,h:40,h:40,c:32]                       1,280               input_12   |                             nl_of32[3]             
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+5      input_20 (Conv2D, Conv)                    [b:1,h:40,h:40,c:32]   3,104/12,416      122,912            onnxConv_78   |                             conv2d_of32[4]         
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+6      onnxConv_81 (Nonlinearity, Relu)           [b:1,h:40,h:40,c:32]                       1,280               input_20   |                             nl_of32[5]             
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+7      onnxAdd_118 (Conv2D, Conv)                 [b:1,h:40,h:40,c:32]   3,104/12,416      122,912            onnxConv_81   |                             conv2d_of32[6]         
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+8      onnxRelu_84 (Eltwise, Add)                 [b:1,h:40,h:40,c:32]                       1,280            onnxAdd_118   |                             eltwise/sum_of32[7]    
+                                                                                                              onnxConv_75   | 
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+9      input_28 (Nonlinearity, Relu)              [b:1,h:40,h:40,c:32]                       1,280            onnxRelu_84   |                             nl_of32[8]             
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+10     input_36 (Conv2D, Conv)                    [b:1,h:40,h:40,c:32]   3,104/12,416      122,912               input_28   |                             conv2d_of32[9]         
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+11     onnxConv_88 (Nonlinearity, Relu)           [b:1,h:40,h:40,c:32]                       1,280               input_36   |                             nl_of32[10]            
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+12     input_44 (Conv2D, Conv)                    [b:1,h:40,h:40,c:32]   3,104/12,416      122,912            onnxConv_88   |                             conv2d_of32[11]        
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+13     onnxConv_91 (Nonlinearity, Relu)           [b:1,h:40,h:40,c:32]                       1,280               input_44   |                             nl_of32[12]            
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+14     onnxAdd_127 (Conv2D, Conv)                 [b:1,h:40,h:40,c:32]   3,104/12,416      122,912            onnxConv_91   |                             conv2d_of32[13]        
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+15     onnxRelu_94 (Eltwise, Add)                 [b:1,h:40,h:40,c:32]                       1,280            onnxAdd_127   |                             eltwise/sum_of32[14]   
+                                                                                                                 input_28   | 
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+16     input_52 (Nonlinearity, Relu)              [b:1,h:40,h:40,c:32]                       1,280            onnxRelu_94   |                             nl_of32[15]            
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+17     input_60 (Conv2D, Conv)                    [b:1,h:40,h:40,c:32]   3,104/12,416      122,912               input_52   |                             conv2d_of32[16]        
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+18     onnxConv_98 (Nonlinearity, Relu)           [b:1,h:40,h:40,c:32]                       1,280               input_60   |                             nl_of32[17]            
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+19     input_68 (Conv2D, Conv)                    [b:1,h:40,h:40,c:32]   3,104/12,416      122,912            onnxConv_98   |                             conv2d_of32[18]        
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+20     onnxConv_101 (Nonlinearity, Relu)          [b:1,h:40,h:40,c:32]                       1,280               input_68   |                             nl_of32[19]            
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+21     onnxAdd_136 (Conv2D, Conv)                 [b:1,h:40,h:40,c:32]   3,104/12,416      122,912           onnxConv_101   |                             conv2d_of32[20]        
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+22     onnxRelu_104 (Eltwise, Add)                [b:1,h:40,h:40,c:32]                       1,280            onnxAdd_136   |                             eltwise/sum_of32[21]   
+                                                                                                                 input_52   | 
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+23     input_76 (Nonlinearity, Relu)              [b:1,h:40,h:40,c:32]                       1,280           onnxRelu_104   |                             nl_of32[22]            
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+24     onnxGemm_106 (Reshape, Flatten)            [b:1,c:1280]                                                   input_76   |                             
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+25     input_80 (Gemm, Gemm)                      [b:1,c:10]                                12,810           onnxGemm_106   | +51,240(+100.0%)            dense_of32[23]         
+                                                                                                     classifier_fc_weight   | 
+                                                                                                       classifier_fc_bias   | 
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+26     modelOutput (Nonlinearity, Softmax)        [b:1,c:10]                                   150               input_80   |                             nl_of32[o][24]         
+------ ------------------------------------------ ---------------------- --------------- --------- ---------------------- --- ------------------ -------- ---------------------- 
+model/c-model: macc=1,170,400/1,170,400  weights=166,568/166,568  activations=--/11,008 io=--/0
 
 
 
 Generated C-graph summary
 ------------------------------------------------------------------------------------------------------------------------
-model name            : fold_20_pre_combination_fullvalid
+model name            : fold_1_pre_combination_fullvalid_b32
 c-name                : combination
 c-node #              : 25
 c-array #             : 48
-activations size      : 22016 (1 segment)
-weights size          : 554280 (22 segments)
-macc                  : 4552480
+activations size      : 11008 (1 segment)
+weights size          : 166568 (22 segments)
+macc                  : 1170400
 inputs                : ['modelInput_output']
 outputs               : ['modelOutput_output']
 
 C-Arrays (48)
------- --------------------- -------------- ----------------------------- ------------- --------- --------- 
-c_id   name (*_array)        item/size      domain/mem-pool               c-type        fmt       comment   
------- --------------------- -------------- ----------------------------- ------------- --------- --------- 
-0      input_4_bias          64/256         weights/input_4_bias          const float   float32             
-1      input_12_weights      12288/49152    weights/input_12_weights      const float   float32             
-2      input_12_bias         64/256         weights/input_12_bias         const float   float32             
-3      input_20_weights      12288/49152    weights/input_20_weights      const float   float32             
-4      input_20_bias         64/256         weights/input_20_bias         const float   float32             
-5      onnxAdd_127_weights   12288/49152    weights/onnxAdd_127_weights   const float   float32             
-6      onnxAdd_127_bias      64/256         weights/onnxAdd_127_bias      const float   float32             
-7      input_36_weights      12288/49152    weights/input_36_weights      const float   float32             
-8      input_36_bias         64/256         weights/input_36_bias         const float   float32             
-9      input_44_weights      12288/49152    weights/input_44_weights      const float   float32             
-10     input_44_bias         64/256         weights/input_44_bias         const float   float32             
-11     onnxAdd_136_weights   12288/49152    weights/onnxAdd_136_weights   const float   float32             
-12     onnxAdd_136_bias      64/256         weights/onnxAdd_136_bias      const float   float32             
-13     input_60_weights      12288/49152    weights/input_60_weights      const float   float32             
-14     input_60_bias         64/256         weights/input_60_bias         const float   float32             
-15     input_68_weights      12288/49152    weights/input_68_weights      const float   float32             
-16     input_68_bias         64/256         weights/input_68_bias         const float   float32             
-17     onnxAdd_145_weights   12288/49152    weights/onnxAdd_145_weights   const float   float32             
-18     onnxAdd_145_bias      64/256         weights/onnxAdd_145_bias      const float   float32             
-19     input_80_weights      25600/102400   weights/input_80_weights      const float   float32             
-20     input_80_bias         10/40          weights/input_80_bias         const float   float32             
-21     modelInput_output     360/1440       activations/**default**       float         float32   /input    
-22     input_4_output        2560/10240     activations/**default**       float         float32             
-23     onnxConv_75_output    2560/10240     activations/**default**       float         float32             
-24     input_12_output       2560/10240     activations/**default**       float         float32             
-25     onnxConv_78_output    2560/10240     activations/**default**       float         float32             
-26     input_20_output       2560/10240     activations/**default**       float         float32             
-27     onnxConv_81_output    2560/10240     activations/**default**       float         float32             
-28     onnxAdd_127_output    2560/10240     activations/**default**       float         float32             
-29     onnxRelu_84_output    2560/10240     activations/**default**       float         float32             
-30     input_28_output       2560/10240     activations/**default**       float         float32             
-31     input_36_output       2560/10240     activations/**default**       float         float32             
-32     onnxConv_88_output    2560/10240     activations/**default**       float         float32             
-33     input_44_output       2560/10240     activations/**default**       float         float32             
-34     onnxConv_91_output    2560/10240     activations/**default**       float         float32             
-35     onnxAdd_136_output    2560/10240     activations/**default**       float         float32             
-36     onnxRelu_94_output    2560/10240     activations/**default**       float         float32             
-37     input_52_output       2560/10240     activations/**default**       float         float32             
-38     input_60_output       2560/10240     activations/**default**       float         float32             
-39     onnxConv_98_output    2560/10240     activations/**default**       float         float32             
-40     input_68_output       2560/10240     activations/**default**       float         float32             
-41     onnxConv_101_output   2560/10240     activations/**default**       float         float32             
-42     onnxAdd_145_output    2560/10240     activations/**default**       float         float32             
-43     onnxRelu_104_output   2560/10240     activations/**default**       float         float32             
-44     input_76_output       2560/10240     activations/**default**       float         float32             
-45     input_80_output       10/40          activations/**default**       float         float32             
-46     modelOutput_output    10/40          activations/**default**       float         float32   /output   
-47     input_4_weights       1728/6912      weights/input_4_weights       const float   float32             
------- --------------------- -------------- ----------------------------- ------------- --------- --------- 
+------ --------------------- ------------- ----------------------------- ------------- --------- --------- 
+c_id   name (*_array)        item/size     domain/mem-pool               c-type        fmt       comment   
+------ --------------------- ------------- ----------------------------- ------------- --------- --------- 
+0      input_36_bias         32/128        weights/input_36_bias         const float   float32             
+1      input_44_weights      3072/12288    weights/input_44_weights      const float   float32             
+2      input_44_bias         32/128        weights/input_44_bias         const float   float32             
+3      onnxAdd_127_weights   3072/12288    weights/onnxAdd_127_weights   const float   float32             
+4      onnxAdd_127_bias      32/128        weights/onnxAdd_127_bias      const float   float32             
+5      input_60_weights      3072/12288    weights/input_60_weights      const float   float32             
+6      input_60_bias         32/128        weights/input_60_bias         const float   float32             
+7      input_68_weights      3072/12288    weights/input_68_weights      const float   float32             
+8      input_68_bias         32/128        weights/input_68_bias         const float   float32             
+9      onnxAdd_136_weights   3072/12288    weights/onnxAdd_136_weights   const float   float32             
+10     onnxAdd_136_bias      32/128        weights/onnxAdd_136_bias      const float   float32             
+11     input_80_weights      12800/51200   weights/input_80_weights      const float   float32             
+12     input_80_bias         10/40         weights/input_80_bias         const float   float32             
+13     modelInput_output     360/1440      activations/**default**       float         float32   /input    
+14     input_4_output        1280/5120     activations/**default**       float         float32             
+15     onnxConv_75_output    1280/5120     activations/**default**       float         float32             
+16     input_12_output       1280/5120     activations/**default**       float         float32             
+17     onnxConv_78_output    1280/5120     activations/**default**       float         float32             
+18     input_20_output       1280/5120     activations/**default**       float         float32             
+19     onnxConv_81_output    1280/5120     activations/**default**       float         float32             
+20     onnxAdd_118_output    1280/5120     activations/**default**       float         float32             
+21     onnxRelu_84_output    1280/5120     activations/**default**       float         float32             
+22     input_28_output       1280/5120     activations/**default**       float         float32             
+23     input_36_output       1280/5120     activations/**default**       float         float32             
+24     onnxConv_88_output    1280/5120     activations/**default**       float         float32             
+25     input_44_output       1280/5120     activations/**default**       float         float32             
+26     onnxConv_91_output    1280/5120     activations/**default**       float         float32             
+27     onnxAdd_127_output    1280/5120     activations/**default**       float         float32             
+28     onnxRelu_94_output    1280/5120     activations/**default**       float         float32             
+29     input_52_output       1280/5120     activations/**default**       float         float32             
+30     input_60_output       1280/5120     activations/**default**       float         float32             
+31     onnxConv_98_output    1280/5120     activations/**default**       float         float32             
+32     input_68_output       1280/5120     activations/**default**       float         float32             
+33     onnxConv_101_output   1280/5120     activations/**default**       float         float32             
+34     onnxAdd_136_output    1280/5120     activations/**default**       float         float32             
+35     onnxRelu_104_output   1280/5120     activations/**default**       float         float32             
+36     input_76_output       1280/5120     activations/**default**       float         float32             
+37     input_80_output       10/40         activations/**default**       float         float32             
+38     modelOutput_output    10/40         activations/**default**       float         float32   /output   
+39     input_4_weights       864/3456      weights/input_4_weights       const float   float32             
+40     input_4_bias          32/128        weights/input_4_bias          const float   float32             
+41     input_12_weights      3072/12288    weights/input_12_weights      const float   float32             
+42     input_12_bias         32/128        weights/input_12_bias         const float   float32             
+43     input_20_weights      3072/12288    weights/input_20_weights      const float   float32             
+44     input_20_bias         32/128        weights/input_20_bias         const float   float32             
+45     onnxAdd_118_weights   3072/12288    weights/onnxAdd_118_weights   const float   float32             
+46     onnxAdd_118_bias      32/128        weights/onnxAdd_118_bias      const float   float32             
+47     input_36_weights      3072/12288    weights/input_36_weights      const float   float32             
+------ --------------------- ------------- ----------------------------- ------------- --------- --------- 
 
 C-Layers (25)
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-c_id   name (*_layer)   id   layer_type     macc     rom      tensors                  shape (array id)   
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-0      input_4          1    conv2d         69184    7168     I: modelInput_output     (1,40,9) (21)      
-                                                              W: input_4_weights       (9,3,1,64) (47)    
-                                                              W: input_4_bias          (64,) (0)          
-                                                              O: input_4_output        (1,40,64) (22)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-1      onnxConv_75      2    nl             2560     0        I: input_4_output        (1,40,64) (22)     
-                                                              O: onnxConv_75_output    (1,40,64) (23)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-2      input_12         3    conv2d         491584   49408    I: onnxConv_75_output    (1,40,64) (23)     
-                                                              W: input_12_weights      (64,3,1,64) (1)    
-                                                              W: input_12_bias         (64,) (2)          
-                                                              O: input_12_output       (1,40,64) (24)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-3      onnxConv_78      4    nl             2560     0        I: input_12_output       (1,40,64) (24)     
-                                                              O: onnxConv_78_output    (1,40,64) (25)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-4      input_20         5    conv2d         491584   49408    I: onnxConv_78_output    (1,40,64) (25)     
-                                                              W: input_20_weights      (64,3,1,64) (3)    
-                                                              W: input_20_bias         (64,) (4)          
-                                                              O: input_20_output       (1,40,64) (26)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-5      onnxConv_81      6    nl             2560     0        I: input_20_output       (1,40,64) (26)     
-                                                              O: onnxConv_81_output    (1,40,64) (27)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-6      onnxAdd_127      7    conv2d         491584   49408    I: onnxConv_81_output    (1,40,64) (27)     
-                                                              W: onnxAdd_127_weights   (64,3,1,64) (5)    
-                                                              W: onnxAdd_127_bias      (64,) (6)          
-                                                              O: onnxAdd_127_output    (1,40,64) (28)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-7      onnxRelu_84      8    eltwise/sum    2560     0        I: onnxAdd_127_output    (1,40,64) (28)     
-                                                              I: onnxConv_75_output    (1,40,64) (23)     
-                                                              O: onnxRelu_84_output    (1,40,64) (29)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-8      input_28         9    nl             2560     0        I: onnxRelu_84_output    (1,40,64) (29)     
-                                                              O: input_28_output       (1,40,64) (30)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-9      input_36         10   conv2d         491584   49408    I: input_28_output       (1,40,64) (30)     
-                                                              W: input_36_weights      (64,3,1,64) (7)    
-                                                              W: input_36_bias         (64,) (8)          
-                                                              O: input_36_output       (1,40,64) (31)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-10     onnxConv_88      11   nl             2560     0        I: input_36_output       (1,40,64) (31)     
-                                                              O: onnxConv_88_output    (1,40,64) (32)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-11     input_44         12   conv2d         491584   49408    I: onnxConv_88_output    (1,40,64) (32)     
-                                                              W: input_44_weights      (64,3,1,64) (9)    
-                                                              W: input_44_bias         (64,) (10)         
-                                                              O: input_44_output       (1,40,64) (33)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-12     onnxConv_91      13   nl             2560     0        I: input_44_output       (1,40,64) (33)     
-                                                              O: onnxConv_91_output    (1,40,64) (34)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-13     onnxAdd_136      14   conv2d         491584   49408    I: onnxConv_91_output    (1,40,64) (34)     
-                                                              W: onnxAdd_136_weights   (64,3,1,64) (11)   
-                                                              W: onnxAdd_136_bias      (64,) (12)         
-                                                              O: onnxAdd_136_output    (1,40,64) (35)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-14     onnxRelu_94      15   eltwise/sum    2560     0        I: onnxAdd_136_output    (1,40,64) (35)     
-                                                              I: input_28_output       (1,40,64) (30)     
-                                                              O: onnxRelu_94_output    (1,40,64) (36)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-15     input_52         16   nl             2560     0        I: onnxRelu_94_output    (1,40,64) (36)     
-                                                              O: input_52_output       (1,40,64) (37)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-16     input_60         17   conv2d         491584   49408    I: input_52_output       (1,40,64) (37)     
-                                                              W: input_60_weights      (64,3,1,64) (13)   
-                                                              W: input_60_bias         (64,) (14)         
-                                                              O: input_60_output       (1,40,64) (38)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-17     onnxConv_98      18   nl             2560     0        I: input_60_output       (1,40,64) (38)     
-                                                              O: onnxConv_98_output    (1,40,64) (39)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-18     input_68         19   conv2d         491584   49408    I: onnxConv_98_output    (1,40,64) (39)     
-                                                              W: input_68_weights      (64,3,1,64) (15)   
-                                                              W: input_68_bias         (64,) (16)         
-                                                              O: input_68_output       (1,40,64) (40)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-19     onnxConv_101     20   nl             2560     0        I: input_68_output       (1,40,64) (40)     
-                                                              O: onnxConv_101_output   (1,40,64) (41)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-20     onnxAdd_145      21   conv2d         491584   49408    I: onnxConv_101_output   (1,40,64) (41)     
-                                                              W: onnxAdd_145_weights   (64,3,1,64) (17)   
-                                                              W: onnxAdd_145_bias      (64,) (18)         
-                                                              O: onnxAdd_145_output    (1,40,64) (42)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-21     onnxRelu_104     22   eltwise/sum    2560     0        I: onnxAdd_145_output    (1,40,64) (42)     
-                                                              I: input_52_output       (1,40,64) (37)     
-                                                              O: onnxRelu_104_output   (1,40,64) (43)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-22     input_76         23   nl             2560     0        I: onnxRelu_104_output   (1,40,64) (43)     
-                                                              O: input_76_output       (1,40,64) (44)     
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-23     input_80         31   dense          25610    102440   I: input_76_output0      (1,2560) (44)      
-                                                              W: input_80_weights      (2560,10) (19)     
-                                                              W: input_80_bias         (10,) (20)         
-                                                              O: input_80_output       (1,10) (45)        
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
-24     modelOutput      32   nl             150      0        I: input_80_output       (1,10) (45)        
-                                                              O: modelOutput_output    (1,10) (46)        
------- ---------------- ---- -------------- -------- -------- ------------------------ ------------------ 
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+c_id   name (*_layer)   id   layer_type     macc     rom     tensors                  shape (array id)   
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+0      input_4          1    conv2d         34592    3584    I: modelInput_output     (1,40,9) (13)      
+                                                             W: input_4_weights       (9,3,1,32) (39)    
+                                                             W: input_4_bias          (32,) (40)         
+                                                             O: input_4_output        (1,40,32) (14)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+1      onnxConv_75      2    nl             1280     0       I: input_4_output        (1,40,32) (14)     
+                                                             O: onnxConv_75_output    (1,40,32) (15)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+2      input_12         3    conv2d         122912   12416   I: onnxConv_75_output    (1,40,32) (15)     
+                                                             W: input_12_weights      (32,3,1,32) (41)   
+                                                             W: input_12_bias         (32,) (42)         
+                                                             O: input_12_output       (1,40,32) (16)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+3      onnxConv_78      4    nl             1280     0       I: input_12_output       (1,40,32) (16)     
+                                                             O: onnxConv_78_output    (1,40,32) (17)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+4      input_20         5    conv2d         122912   12416   I: onnxConv_78_output    (1,40,32) (17)     
+                                                             W: input_20_weights      (32,3,1,32) (43)   
+                                                             W: input_20_bias         (32,) (44)         
+                                                             O: input_20_output       (1,40,32) (18)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+5      onnxConv_81      6    nl             1280     0       I: input_20_output       (1,40,32) (18)     
+                                                             O: onnxConv_81_output    (1,40,32) (19)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+6      onnxAdd_118      7    conv2d         122912   12416   I: onnxConv_81_output    (1,40,32) (19)     
+                                                             W: onnxAdd_118_weights   (32,3,1,32) (45)   
+                                                             W: onnxAdd_118_bias      (32,) (46)         
+                                                             O: onnxAdd_118_output    (1,40,32) (20)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+7      onnxRelu_84      8    eltwise/sum    1280     0       I: onnxAdd_118_output    (1,40,32) (20)     
+                                                             I: onnxConv_75_output    (1,40,32) (15)     
+                                                             O: onnxRelu_84_output    (1,40,32) (21)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+8      input_28         9    nl             1280     0       I: onnxRelu_84_output    (1,40,32) (21)     
+                                                             O: input_28_output       (1,40,32) (22)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+9      input_36         10   conv2d         122912   12416   I: input_28_output       (1,40,32) (22)     
+                                                             W: input_36_weights      (32,3,1,32) (47)   
+                                                             W: input_36_bias         (32,) (0)          
+                                                             O: input_36_output       (1,40,32) (23)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+10     onnxConv_88      11   nl             1280     0       I: input_36_output       (1,40,32) (23)     
+                                                             O: onnxConv_88_output    (1,40,32) (24)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+11     input_44         12   conv2d         122912   12416   I: onnxConv_88_output    (1,40,32) (24)     
+                                                             W: input_44_weights      (32,3,1,32) (1)    
+                                                             W: input_44_bias         (32,) (2)          
+                                                             O: input_44_output       (1,40,32) (25)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+12     onnxConv_91      13   nl             1280     0       I: input_44_output       (1,40,32) (25)     
+                                                             O: onnxConv_91_output    (1,40,32) (26)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+13     onnxAdd_127      14   conv2d         122912   12416   I: onnxConv_91_output    (1,40,32) (26)     
+                                                             W: onnxAdd_127_weights   (32,3,1,32) (3)    
+                                                             W: onnxAdd_127_bias      (32,) (4)          
+                                                             O: onnxAdd_127_output    (1,40,32) (27)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+14     onnxRelu_94      15   eltwise/sum    1280     0       I: onnxAdd_127_output    (1,40,32) (27)     
+                                                             I: input_28_output       (1,40,32) (22)     
+                                                             O: onnxRelu_94_output    (1,40,32) (28)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+15     input_52         16   nl             1280     0       I: onnxRelu_94_output    (1,40,32) (28)     
+                                                             O: input_52_output       (1,40,32) (29)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+16     input_60         17   conv2d         122912   12416   I: input_52_output       (1,40,32) (29)     
+                                                             W: input_60_weights      (32,3,1,32) (5)    
+                                                             W: input_60_bias         (32,) (6)          
+                                                             O: input_60_output       (1,40,32) (30)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+17     onnxConv_98      18   nl             1280     0       I: input_60_output       (1,40,32) (30)     
+                                                             O: onnxConv_98_output    (1,40,32) (31)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+18     input_68         19   conv2d         122912   12416   I: onnxConv_98_output    (1,40,32) (31)     
+                                                             W: input_68_weights      (32,3,1,32) (7)    
+                                                             W: input_68_bias         (32,) (8)          
+                                                             O: input_68_output       (1,40,32) (32)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+19     onnxConv_101     20   nl             1280     0       I: input_68_output       (1,40,32) (32)     
+                                                             O: onnxConv_101_output   (1,40,32) (33)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+20     onnxAdd_136      21   conv2d         122912   12416   I: onnxConv_101_output   (1,40,32) (33)     
+                                                             W: onnxAdd_136_weights   (32,3,1,32) (9)    
+                                                             W: onnxAdd_136_bias      (32,) (10)         
+                                                             O: onnxAdd_136_output    (1,40,32) (34)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+21     onnxRelu_104     22   eltwise/sum    1280     0       I: onnxAdd_136_output    (1,40,32) (34)     
+                                                             I: input_52_output       (1,40,32) (29)     
+                                                             O: onnxRelu_104_output   (1,40,32) (35)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+22     input_76         23   nl             1280     0       I: onnxRelu_104_output   (1,40,32) (35)     
+                                                             O: input_76_output       (1,40,32) (36)     
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+23     input_80         25   dense          12810    51240   I: input_76_output0      (1,1280) (36)      
+                                                             W: input_80_weights      (1280,10) (11)     
+                                                             W: input_80_bias         (10,) (12)         
+                                                             O: input_80_output       (1,10) (37)        
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
+24     modelOutput      26   nl             150      0       I: input_80_output       (1,10) (37)        
+                                                             O: modelOutput_output    (1,10) (38)        
+------ ---------------- ---- -------------- -------- ------- ------------------------ ------------------ 
 
 
 
 Number of operations per c-layer
-------- ------ ---------------------------- ----------- -------------- --------- ---------- 
-c_id    m_id   name (type)                          #op           type    #param   sparsity 
-------- ------ ---------------------------- ----------- -------------- --------- ---------- 
-0       1      input_4 (conv2d)                  69,184   smul_f32_f32     1,792     0.0000 
-1       2      onnxConv_75 (nl)                   2,560     op_f32_f32           
-2       3      input_12 (conv2d)                491,584   smul_f32_f32    12,352     0.0000 
-3       4      onnxConv_78 (nl)                   2,560     op_f32_f32           
-4       5      input_20 (conv2d)                491,584   smul_f32_f32    12,352     0.0000 
-5       6      onnxConv_81 (nl)                   2,560     op_f32_f32           
-6       7      onnxAdd_127 (conv2d)             491,584   smul_f32_f32    12,352     0.0000 
-7       8      onnxRelu_84 (eltwise/sum)          2,560     op_f32_f32           
-8       9      input_28 (nl)                      2,560     op_f32_f32           
-9       10     input_36 (conv2d)                491,584   smul_f32_f32    12,352     0.0000 
-10      11     onnxConv_88 (nl)                   2,560     op_f32_f32           
-11      12     input_44 (conv2d)                491,584   smul_f32_f32    12,352     0.0000 
-12      13     onnxConv_91 (nl)                   2,560     op_f32_f32           
-13      14     onnxAdd_136 (conv2d)             491,584   smul_f32_f32    12,352     0.0000 
-14      15     onnxRelu_94 (eltwise/sum)          2,560     op_f32_f32           
-15      16     input_52 (nl)                      2,560     op_f32_f32           
-16      17     input_60 (conv2d)                491,584   smul_f32_f32    12,352     0.0000 
-17      18     onnxConv_98 (nl)                   2,560     op_f32_f32           
-18      19     input_68 (conv2d)                491,584   smul_f32_f32    12,352     0.0000 
-19      20     onnxConv_101 (nl)                  2,560     op_f32_f32           
-20      21     onnxAdd_145 (conv2d)             491,584   smul_f32_f32    12,352     0.0000 
-21      22     onnxRelu_104 (eltwise/sum)         2,560     op_f32_f32           
-22      23     input_76 (nl)                      2,560     op_f32_f32           
-23      31     input_80 (dense)                  25,610   smul_f32_f32    25,610     0.0000 
-24      32     modelOutput (nl)                     150     op_f32_f32           
-------- ------ ---------------------------- ----------- -------------- --------- ---------- 
-total                                         4,552,480                  138,570     0.0000 
+------- ------ ---------------------------- ----------- -------------- -------- ---------- 
+c_id    m_id   name (type)                          #op           type   #param   sparsity 
+------- ------ ---------------------------- ----------- -------------- -------- ---------- 
+0       1      input_4 (conv2d)                  34,592   smul_f32_f32      896     0.0000 
+1       2      onnxConv_75 (nl)                   1,280     op_f32_f32          
+2       3      input_12 (conv2d)                122,912   smul_f32_f32    3,104     0.0000 
+3       4      onnxConv_78 (nl)                   1,280     op_f32_f32          
+4       5      input_20 (conv2d)                122,912   smul_f32_f32    3,104     0.0000 
+5       6      onnxConv_81 (nl)                   1,280     op_f32_f32          
+6       7      onnxAdd_118 (conv2d)             122,912   smul_f32_f32    3,104     0.0000 
+7       8      onnxRelu_84 (eltwise/sum)          1,280     op_f32_f32          
+8       9      input_28 (nl)                      1,280     op_f32_f32          
+9       10     input_36 (conv2d)                122,912   smul_f32_f32    3,104     0.0000 
+10      11     onnxConv_88 (nl)                   1,280     op_f32_f32          
+11      12     input_44 (conv2d)                122,912   smul_f32_f32    3,104     0.0000 
+12      13     onnxConv_91 (nl)                   1,280     op_f32_f32          
+13      14     onnxAdd_127 (conv2d)             122,912   smul_f32_f32    3,104     0.0000 
+14      15     onnxRelu_94 (eltwise/sum)          1,280     op_f32_f32          
+15      16     input_52 (nl)                      1,280     op_f32_f32          
+16      17     input_60 (conv2d)                122,912   smul_f32_f32    3,104     0.0000 
+17      18     onnxConv_98 (nl)                   1,280     op_f32_f32          
+18      19     input_68 (conv2d)                122,912   smul_f32_f32    3,104     0.0000 
+19      20     onnxConv_101 (nl)                  1,280     op_f32_f32          
+20      21     onnxAdd_136 (conv2d)             122,912   smul_f32_f32    3,104     0.0000 
+21      22     onnxRelu_104 (eltwise/sum)         1,280     op_f32_f32          
+22      23     input_76 (nl)                      1,280     op_f32_f32          
+23      25     input_80 (dense)                  12,810   smul_f32_f32   12,810     0.0000 
+24      26     modelOutput (nl)                     150     op_f32_f32          
+------- ------ ---------------------------- ----------- -------------- -------- ---------- 
+total                                         1,170,400                  41,642     0.0000 
 
 Number of operation types
 ---------------- ----------- ----------- 
 operation type             #           % 
 ---------------- ----------- ----------- 
-smul_f32_f32       4,519,050       99.3% 
-op_f32_f32            33,430        0.7% 
+smul_f32_f32       1,153,610       98.6% 
+op_f32_f32            16,790        1.4% 
 
 Complexity report (model)
 ------ -------------- ------------------------- ------------------------- ------ 
 m_id   name           c_macc                    c_rom                     c_id   
 ------ -------------- ------------------------- ------------------------- ------ 
-1      input_4        |||                1.5%   ||                 1.3%   [0]    
+1      input_4        |||||              3.0%   ||                 2.2%   [0]    
 2      onnxConv_75    |                  0.1%   |                  0.0%   [1]    
-3      input_12       ||||||||||||||||  10.8%   ||||||||           8.9%   [2]    
+3      input_12       ||||||||||||||||  10.5%   ||||               7.5%   [2]    
 4      onnxConv_78    |                  0.1%   |                  0.0%   [3]    
-5      input_20       ||||||||||||||||  10.8%   ||||||||           8.9%   [4]    
+5      input_20       ||||||||||||||||  10.5%   ||||               7.5%   [4]    
 6      onnxConv_81    |                  0.1%   |                  0.0%   [5]    
-7      onnxAdd_127    ||||||||||||||||  10.8%   ||||||||           8.9%   [6]    
+7      onnxAdd_118    ||||||||||||||||  10.5%   ||||               7.5%   [6]    
 8      onnxRelu_84    |                  0.1%   |                  0.0%   [7]    
 9      input_28       |                  0.1%   |                  0.0%   [8]    
-10     input_36       ||||||||||||||||  10.8%   ||||||||           8.9%   [9]    
+10     input_36       ||||||||||||||||  10.5%   ||||               7.5%   [9]    
 11     onnxConv_88    |                  0.1%   |                  0.0%   [10]   
-12     input_44       ||||||||||||||||  10.8%   ||||||||           8.9%   [11]   
+12     input_44       ||||||||||||||||  10.5%   ||||               7.5%   [11]   
 13     onnxConv_91    |                  0.1%   |                  0.0%   [12]   
-14     onnxAdd_136    ||||||||||||||||  10.8%   ||||||||           8.9%   [13]   
+14     onnxAdd_127    ||||||||||||||||  10.5%   ||||               7.5%   [13]   
 15     onnxRelu_94    |                  0.1%   |                  0.0%   [14]   
 16     input_52       |                  0.1%   |                  0.0%   [15]   
-17     input_60       ||||||||||||||||  10.8%   ||||||||           8.9%   [16]   
+17     input_60       ||||||||||||||||  10.5%   ||||               7.5%   [16]   
 18     onnxConv_98    |                  0.1%   |                  0.0%   [17]   
-19     input_68       ||||||||||||||||  10.8%   ||||||||           8.9%   [18]   
+19     input_68       ||||||||||||||||  10.5%   ||||               7.5%   [18]   
 20     onnxConv_101   |                  0.1%   |                  0.0%   [19]   
-21     onnxAdd_145    ||||||||||||||||  10.8%   ||||||||           8.9%   [20]   
+21     onnxAdd_136    ||||||||||||||||  10.5%   ||||               7.5%   [20]   
 22     onnxRelu_104   |                  0.1%   |                  0.0%   [21]   
 23     input_76       |                  0.1%   |                  0.0%   [22]   
-31     input_80       |                  0.6%   ||||||||||||||||  18.5%   [23]   
-32     modelOutput    |                  0.0%   |                  0.0%   [24]   
+25     input_80       ||                 1.1%   ||||||||||||||||  30.8%   [23]   
+26     modelOutput    |                  0.0%   |                  0.0%   [24]   
 ------ -------------- ------------------------- ------------------------- ------ 
-macc=4,552,480 weights=554,280 act=22,016 ram_io=0
+macc=1,170,400 weights=166,568 act=11,008 ram_io=0
 
 Generated files (7)
 ------------------------------------------------------------------------- 

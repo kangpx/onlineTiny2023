@@ -59,7 +59,7 @@ def main():
     #--------------------------------------------------------------------#
     #                     instantiate serial object                      #
     #--------------------------------------------------------------------#
-    ser = serial.Serial('/dev/tty.usbmodem1203', 115200, timeout=0.5)
+    ser = serial.Serial('/dev/tty.usbmodem11103', 115200, timeout=0.5)
     
     #--------------------------------------------------------------------#
     #                             load file                              #
@@ -77,8 +77,8 @@ def main():
     #--------------------------------------------------------------------#
     #                               trial                                #
     #--------------------------------------------------------------------#
-    y_pred_test_pre = trial(ser, x_test, y_test, False)
-    print(f'pre accuracy: {accuracy_score(y_test, y_pred_test_pre)}')
+    # y_pred_test_pre = trial(ser, x_test, y_test, False)
+    # print(f'pre accuracy: {accuracy_score(y_test, y_pred_test_pre)}')
     for epoch in range(5):
         _ = trial(ser, x_incu, y_incu, True) 
     y_pred_test_incu = trial(ser, x_test, y_test, False)

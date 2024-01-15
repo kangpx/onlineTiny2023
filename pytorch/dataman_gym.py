@@ -1,5 +1,6 @@
 import csv
 import os
+import random
 import numpy as np
 from numpy.lib.stride_tricks import sliding_window_view
 import pandas as pd
@@ -144,8 +145,65 @@ def Xy_TrainTest(file, fold_n, normalize=True):
     return X_train, y_train, X_test, y_test
 
 
-if __name__ == '__main__':
-    x_train, y_train, x_test, y_test = Xy_TrainTest('~/onlineTiny2023datasets/Gym_Data.csv', 1)
-    # print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
+def Xy_TrainTest_Kfold(file, fold_n, normalize=True):
+    print(f'loading {file}...')
+    data_session = pd.read_csv(file)
+    data_session = pd.DataFrame(data_session)
 
+    print(f'chooing data with position {POSITIONS}...')
+    data_session = data_session[data_session['Sensor_Position'].isin(POSITIONS)].reset_index(drop=True)
+
+    print(f"splitting dataset subject to fold-{fold_n}...")
+    whole = data_session[data_session['Object'].isin([i for i in range(1, 11)])].reset_index(drop=True)
+
+    whole = whole.drop(["Object", "Day", "Sensor_Position"], axis=1)
+
+    X_whole = whole[SENSING_DIMENSIONS].to_numpy()
+    Y_whole = whole['Workout'].to_numpy()
+
+    X_whole = sliding_window_view(X_whole, (SLIDING_WINDOW_LENGTH, X_whole.shape[1]))[::SLIDING_WINDOW_STEP, 0]
+    Y_whole = sliding_window_view(Y_whole, (SLIDING_WINDOW_LENGTH))[::SLIDING_WINDOW_STEP]
+    y_whole = np.array([])
+    for i in range(Y_whole.shape[0]):
+        y_whole = np.append(y_whole, most_common(list(Y_whole[i])))
+    y_whole = y_whole.reshape(-1)
+
+    print('transposing data to channel-first...') 
+    X_whole = X_whole.transpose(0, 2, 1)
+
+    shuffled_indices = np.arange(X_whole.shape[0])
+    random.Random(136).shuffle(shuffled_indices)
+    n_sample_per_segment = X_whole.shape[0] // 10
+    # print(n_sample_per_segment)
+    test_indices = shuffled_indices[(fold_n - 1) * n_sample_per_segment: fold_n * n_sample_per_segment]
+    train_indices = [k for k in shuffled_indices if k not in test_indices]
+    
+    x_train = X_whole[train_indices]
+    y_train = y_whole[train_indices]
+    x_test = X_whole[test_indices]
+    y_test = y_whole[test_indices]
+
+    if normalize:
+        channel_mean = np.mean(x_train, axis=(0, 2)) 
+        channel_std = np.std(x_train, axis=(0, 2))
+        x_train = (x_train - channel_mean.reshape(-1, 1)) / channel_std.reshape(-1, 1)
+        x_test = (x_test - channel_mean.reshape(-1, 1)) / channel_std.reshape(-1, 1)
+
+    print('transforming data from numpy.array into torch.tensor...') 
+    x_train = torch.from_numpy(x_train.copy()).float()
+    y_train = torch.from_numpy(y_train.copy()).long()
+    x_test = torch.from_numpy(x_test.copy()).float()
+    y_test = torch.from_numpy(y_test.copy()).long()
+
+    print('loading complete.')
+    print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
+
+
+    return x_train, y_train, x_test, y_test
+
+
+if __name__ == '__main__':
+    x_train, y_train, x_test, y_test = Xy_TrainTest_Kfold('~/onlineTiny2023datasets/Gym_Data.csv', 1)
+    print(np.mean(x_train.detach().cpu().numpy(), axis=(0, 2)))
+    print(np.std(x_train.detach().cpu().numpy(), axis=(0, 2)))
 

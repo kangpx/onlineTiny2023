@@ -1,5 +1,6 @@
 import os
 import json
+import random
 import multiprocessing as mp
 import scipy.signal as signal
 import numpy as np
@@ -45,10 +46,8 @@ def Xy_TrainTest_Kfold(fold_n):
             y_whole = np.concatenate((y_whole, np.array([CLASSES.index(data['gesture'])])))
 
     shuffled_indices = np.arange(x_whole.shape[0])
-    np.random.seed(136)
-    np.random.shuffle(shuffled_indices)
-    np.random.seed()
-    n_sample_per_segment = x_whole.shape[0] // 10
+    random.Random(136).shuffle(shuffled_indices)
+    n_sample_per_segment = x_whole.shape[0] // 20
     test_indices = shuffled_indices[(fold_n - 1) * n_sample_per_segment: fold_n * n_sample_per_segment]
     train_indices = [k for k in shuffled_indices if k not in test_indices]
     x_train = x_whole[train_indices]

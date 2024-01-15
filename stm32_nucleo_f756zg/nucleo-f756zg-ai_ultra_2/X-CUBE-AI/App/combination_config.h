@@ -3,12 +3,12 @@
   ******************************************************************************
   * @file    combination_config.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    Tue Aug 22 21:45:12 2023
+  * @date    Mon Jan 15 19:49:36 2024
   * @brief   AI Tool Automatic Code Generator for Custom Layers Implementation
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2023 STMicroelectronics.
+  * Copyright (c) 2024 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file

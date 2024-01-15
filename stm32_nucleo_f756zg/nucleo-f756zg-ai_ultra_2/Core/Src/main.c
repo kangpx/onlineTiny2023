@@ -139,6 +139,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
+/* Enable the CPU Cache */
 
   /* Enable I-Cache---------------------------------------------------------*/
   SCB_EnableICache();
@@ -291,8 +292,7 @@ int main(void)
 	  		HAL_UART_Transmit(&huart3, (uint8_t*) uart_buf, uart_buf_len, 100);*/
 
 	  		// Transmit the predicted label through UART
-			uart_buf_len = sprintf(uart_buf, "%lu", y_pred);
-			HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, uart_buf_len, HAL_MAX_DELAY);
+			HAL_UART_Transmit(&huart3, (uint8_t*)(&y_pred), sizeof(y_pred), HAL_MAX_DELAY);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

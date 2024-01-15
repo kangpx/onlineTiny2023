@@ -2,12 +2,12 @@
   ******************************************************************************
   * @file    combination.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    Wed Aug 23 19:26:33 2023
+  * @date    Mon Jan 15 20:31:17 2024
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2023 STMicroelectronics.
+  * Copyright (c) 2024 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -25,7 +25,7 @@
 
 /******************************************************************************/
 #define AI_COMBINATION_MODEL_NAME          "combination"
-#define AI_COMBINATION_ORIGIN_MODEL_NAME   "fold_10_pre_combination_fullvalid"
+#define AI_COMBINATION_ORIGIN_MODEL_NAME   "fold_1_pre_combination_fullvalid_b32_s20"
 
 /******************************************************************************/
 #define AI_COMBINATION_ACTIVATIONS_ALIGNMENT   (4)

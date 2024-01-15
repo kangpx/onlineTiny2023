@@ -11,7 +11,7 @@ import torch.optim as optim
 from torch.optim.lr_scheduler import CosineAnnealingLR, CosineAnnealingWarmRestarts
 from torch.utils.data import DataLoader, TensorDataset, WeightedRandomSampler
 import pandas as pd
-from dataman_gym import SLIDING_WINDOW_LENGTH, CLASSES, SENSING_DIMENSIONS, CLASS_WEIGHTS, Xy_TrainTest
+from dataman_gym import SLIDING_WINDOW_LENGTH, CLASSES, SENSING_DIMENSIONS, CLASS_WEIGHTS, Xy_TrainTest, Xy_TrainTest_Kfold
 from model_definitions import ResNetBackBone, Classifier, ResNet
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_score, recall_score
 from sklearn.model_selection import train_test_split
@@ -24,6 +24,35 @@ print(f'device: {device}')
 
 with open('../dataset_config.json', 'r') as json_file:
     dataset_config = json.load(json_file)
+
+
+def get_dataloader_kfold(fold):
+    x_train, y_train, x_test, y_test = Xy_TrainTest_Kfold(file=dataset_config["gym_dataset_path"], fold_n=fold, normalize=True)
+    x_train, x_valid, y_train, y_valid = train_test_split(x_train, y_train, train_size=0.8, random_state=6507+fold)
+
+    train_dataset = TensorDataset(x_train, y_train)
+    valid_dataset = TensorDataset(x_valid, y_valid)
+    test_dataset = TensorDataset(x_test, y_test)
+
+    train_class_weights = torch.tensor(CLASS_WEIGHTS)
+    # train_class_n_samples = [(y_train == i).sum().item() for i in range(len(CLASSES))]
+    # train_class_weights = [1.0 / n_sample for n_sample in train_class_n_samples]
+    # train_class_weights = torch.tensor(train_class_weights)
+
+    train_loader = DataLoader(train_dataset, shuffle=True, batch_size=64, drop_last=False)
+    valid_loader = DataLoader(valid_dataset, shuffle=False, batch_size=64, drop_last=False)
+    test_loader = DataLoader(test_dataset, shuffle=False, batch_size=64, drop_last=False)
+
+    dataset_summary = pd.DataFrame(index=CLASSES+['total'],
+                                    data={'# train':[(y_train == i_cls).sum().item() for i_cls in range(len(CLASSES))] + [len(train_dataset)], 
+                                          '# valid':[(y_valid == i_cls).sum().item() for i_cls in range(len(CLASSES))] + [len(valid_dataset)],
+                                          '# test':[(y_test == i_cls).sum().item() for i_cls in range(len(CLASSES))] + [len(test_dataset)],})
+    print(dataset_summary)
+    print('class_weights:')
+    for i_cls, cls in enumerate(CLASSES):
+        print(f'{cls}: {train_class_weights[i_cls]}')
+
+    return train_loader, valid_loader, test_loader, None, None, train_class_weights
 
 
 def get_dataloader(fold, include_incnu=True):
@@ -54,7 +83,8 @@ def get_dataloader(fold, include_incnu=True):
     else:
         incnu_dataset = None
 
-    train_class_weights = torch.tensor(CLASS_WEIGHTS)
+    train_class_weights = torch.tensor([1.0 for _ in range(len(CLASSES))])
+    # train_class_weights = torch.tensor(CLASS_WEIGHTS)
     #train_class_n_samples = [(y_train == i).sum().item() for i in range(len(CLASSES))]
     #train_class_weights = [1.0 / n_sample for n_sample in train_class_n_samples]
     #sample_weights = [train_class_weights[y.item()] for y in y_train]
@@ -387,19 +417,20 @@ def main():
     include_incnu = False
 
     for fold in range(1, 11):
-        bb_pre_path       = f'../saved_models/gym/pt/fold_{fold}_pre_backbone_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20.pt'
-        clf_pre_path      = f'../saved_models/gym/pt/fold_{fold}_pre_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20.pt'
-        cmb_pre_onnx_path = f'../saved_models/gym/onnx/fold_{fold}_pre_combination_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20.onnx' 
-        clf_incu_path     = f'../saved_models/gym/pt/fold_{fold}_incu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20.pt'
-        clf_incnu_path    = f'../saved_models/gym/pt/fold_{fold}_incnu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20.pt'
-        his_pre_path      = f'../histories/gym/fold_{fold}_pre_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20.pkl'
-        his_incu_path     = f'../histories/gym/fold_{fold}_incu_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20.pkl'
-        his_incnu_path    = f'../histories/gym/fold_{fold}_incnu_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20.pkl'
+        bb_pre_path       = f'../saved_models/gym/pt/fold_{fold}_pre_backbone_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20_w1.pt'
+        clf_pre_path      = f'../saved_models/gym/pt/fold_{fold}_pre_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20_w1.pt'
+        cmb_pre_onnx_path = f'../saved_models/gym/onnx/fold_{fold}_pre_combination_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20_w1.onnx' 
+        clf_incu_path     = f'../saved_models/gym/pt/fold_{fold}_incu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20_w1.pt'
+        clf_incnu_path    = f'../saved_models/gym/pt/fold_{fold}_incnu_classifier_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20_w1.pt'
+        his_pre_path      = f'../histories/gym/fold_{fold}_pre_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20_w1.pkl'
+        his_incu_path     = f'../histories/gym/fold_{fold}_incu_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20_w1.pkl'
+        his_incnu_path    = f'../histories/gym/fold_{fold}_incnu_{"fullvalid" if not include_incnu else "partvalid"}_b32_s20_w1.pkl'
 
         #--------------------------------------------------------------------#
         #                          data preparation                          #
         #--------------------------------------------------------------------#
         train_loader, valid_loader, test_loader, incu_loader, incnu_loader, class_weights = get_dataloader(fold, include_incnu)
+        # train_loader, valid_loader, test_loader, incu_loader, incnu_loader, class_weights = get_dataloader_kfold(fold)
 
         #--------------------------------------------------------------------#
         #                            pre-training                            #

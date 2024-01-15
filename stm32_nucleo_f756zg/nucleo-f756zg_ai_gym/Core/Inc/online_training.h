@@ -20,7 +20,7 @@ typedef struct u_observer_ctx {
 } u_observer_ctx;
 
 
-#define OT_CLASSIFIER_IN_SIZE (64*40)
+#define OT_CLASSIFIER_IN_SIZE (32*40)
 #define OT_CLASSIFIER_OUT_SIZE (12)
 #define OT_CLASSIFIER_IN_SIZE_BYTES (OT_CLASSIFIER_IN_SIZE*4)
 #define OT_CLASSIFIER_OUT_SIZE_BYTES (OT_CLASSIFIER_OUT_SIZE*4)

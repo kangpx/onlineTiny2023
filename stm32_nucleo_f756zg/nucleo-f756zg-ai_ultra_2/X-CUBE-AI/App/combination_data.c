@@ -2,12 +2,12 @@
   ******************************************************************************
   * @file    combination_data.c
   * @author  AST Embedded Analytics Research Platform
-  * @date    Tue Aug 22 21:45:12 2023
+  * @date    Mon Jan 15 19:49:36 2024
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2023 STMicroelectronics.
+  * Copyright (c) 2024 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -21,76 +21,76 @@
 AI_API_DECLARE_BEGIN
 ai_buffer g_combination_data_map_activations[AI_COMBINATION_DATA_ACTIVATIONS_COUNT] = {
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 11264, 1, 1),
-    11264, NULL, NULL),    /* heap_overlay_pool */
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 5632, 1, 1),
+    5632, NULL, NULL),    /* heap_overlay_pool */
   };
 ai_buffer g_combination_data_map_weights[AI_COMBINATION_DATA_WEIGHTS_COUNT] = {
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 256, 1, 1),
-    256, NULL, s_combination_input_4_bias_array_u64),   /* input_4_bias_array */
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 128, 1, 1),
+    128, NULL, s_combination_input_36_bias_array_u64),   /* input_36_bias_array */
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 49152, 1, 1),
-    49152, NULL, s_combination_input_12_weights_array_u64),   /* input_12_weights_array */
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 12288, 1, 1),
+    12288, NULL, s_combination_input_44_weights_array_u64),   /* input_44_weights_array */
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 256, 1, 1),
-    256, NULL, s_combination_input_12_bias_array_u64),   /* input_12_bias_array */
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 128, 1, 1),
+    128, NULL, s_combination_input_44_bias_array_u64),   /* input_44_bias_array */
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 49152, 1, 1),
-    49152, NULL, s_combination_input_20_weights_array_u64),   /* input_20_weights_array */
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 12288, 1, 1),
+    12288, NULL, s_combination_onnxAdd_127_weights_array_u64),   /* onnxAdd_127_weights_array */
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 256, 1, 1),
-    256, NULL, s_combination_input_20_bias_array_u64),   /* input_20_bias_array */
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 128, 1, 1),
+    128, NULL, s_combination_onnxAdd_127_bias_array_u64),   /* onnxAdd_127_bias_array */
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 49152, 1, 1),
-    49152, NULL, s_combination_onnxAdd_127_weights_array_u64),   /* onnxAdd_127_weights_array */
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 12288, 1, 1),
+    12288, NULL, s_combination_input_60_weights_array_u64),   /* input_60_weights_array */
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 256, 1, 1),
-    256, NULL, s_combination_onnxAdd_127_bias_array_u64),   /* onnxAdd_127_bias_array */
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 128, 1, 1),
+    128, NULL, s_combination_input_60_bias_array_u64),   /* input_60_bias_array */
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 49152, 1, 1),
-    49152, NULL, s_combination_input_36_weights_array_u64),   /* input_36_weights_array */
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 12288, 1, 1),
+    12288, NULL, s_combination_input_68_weights_array_u64),   /* input_68_weights_array */
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 256, 1, 1),
-    256, NULL, s_combination_input_36_bias_array_u64),   /* input_36_bias_array */
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 128, 1, 1),
+    128, NULL, s_combination_input_68_bias_array_u64),   /* input_68_bias_array */
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 49152, 1, 1),
-    49152, NULL, s_combination_input_44_weights_array_u64),   /* input_44_weights_array */
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 12288, 1, 1),
+    12288, NULL, s_combination_onnxAdd_136_weights_array_u64),   /* onnxAdd_136_weights_array */
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 256, 1, 1),
-    256, NULL, s_combination_input_44_bias_array_u64),   /* input_44_bias_array */
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 128, 1, 1),
+    128, NULL, s_combination_onnxAdd_136_bias_array_u64),   /* onnxAdd_136_bias_array */
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 49152, 1, 1),
-    49152, NULL, s_combination_onnxAdd_136_weights_array_u64),   /* onnxAdd_136_weights_array */
-  AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 256, 1, 1),
-    256, NULL, s_combination_onnxAdd_136_bias_array_u64),   /* onnxAdd_136_bias_array */
-  AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 49152, 1, 1),
-    49152, NULL, s_combination_input_60_weights_array_u64),   /* input_60_weights_array */
-  AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 256, 1, 1),
-    256, NULL, s_combination_input_60_bias_array_u64),   /* input_60_bias_array */
-  AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 49152, 1, 1),
-    49152, NULL, s_combination_input_68_weights_array_u64),   /* input_68_weights_array */
-  AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 256, 1, 1),
-    256, NULL, s_combination_input_68_bias_array_u64),   /* input_68_bias_array */
-  AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 49152, 1, 1),
-    49152, NULL, s_combination_onnxAdd_145_weights_array_u64),   /* onnxAdd_145_weights_array */
-  AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 256, 1, 1),
-    256, NULL, s_combination_onnxAdd_145_bias_array_u64),   /* onnxAdd_145_bias_array */
-  AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 38912, 1, 1),
-    38912, NULL, s_combination_input_80_weights_array_u64),   /* input_80_weights_array */
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 19456, 1, 1),
+    19456, NULL, s_combination_input_80_weights_array_u64),   /* input_80_weights_array */
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
     AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 32, 1, 1),
     32, NULL, s_combination_input_80_bias_array_u64),   /* input_80_bias_array */
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 34560, 1, 1),
-    34560, NULL, s_combination_input_4_weights_array_u64),   /* input_4_weights_array */
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 17280, 1, 1),
+    17280, NULL, s_combination_input_4_weights_array_u64),   /* input_4_weights_array */
+  AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 128, 1, 1),
+    128, NULL, s_combination_input_4_bias_array_u64),   /* input_4_bias_array */
+  AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 12288, 1, 1),
+    12288, NULL, s_combination_input_12_weights_array_u64),   /* input_12_weights_array */
+  AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 128, 1, 1),
+    128, NULL, s_combination_input_12_bias_array_u64),   /* input_12_bias_array */
+  AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 12288, 1, 1),
+    12288, NULL, s_combination_input_20_weights_array_u64),   /* input_20_weights_array */
+  AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 128, 1, 1),
+    128, NULL, s_combination_input_20_bias_array_u64),   /* input_20_bias_array */
+  AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 12288, 1, 1),
+    12288, NULL, s_combination_onnxAdd_118_weights_array_u64),   /* onnxAdd_118_weights_array */
+  AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 128, 1, 1),
+    128, NULL, s_combination_onnxAdd_118_bias_array_u64),   /* onnxAdd_118_bias_array */
+  AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 12288, 1, 1),
+    12288, NULL, s_combination_input_36_weights_array_u64),   /* input_36_weights_array */
   };
 
 

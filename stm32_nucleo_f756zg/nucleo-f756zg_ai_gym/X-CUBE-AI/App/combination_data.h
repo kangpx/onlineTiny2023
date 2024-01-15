@@ -2,10 +2,10 @@
   ******************************************************************************
   * @file    combination_data.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    Wed Aug 23 19:26:33 2023
+  * @date    Mon Jan 15 20:31:17 2024
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
-  * Copyright (c) 2023 STMicroelectronics.
+  * Copyright (c) 2024 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -33,28 +33,28 @@ AI_DEPRECATED
 AI_API_DECLARE_BEGIN
 
 
-extern const ai_u64 s_combination_input_4_bias_array_u64[32];
-extern const ai_u64 s_combination_input_12_weights_array_u64[6144];
-extern const ai_u64 s_combination_input_12_bias_array_u64[32];
-extern const ai_u64 s_combination_input_20_weights_array_u64[6144];
-extern const ai_u64 s_combination_input_20_bias_array_u64[32];
-extern const ai_u64 s_combination_onnxAdd_127_weights_array_u64[6144];
-extern const ai_u64 s_combination_onnxAdd_127_bias_array_u64[32];
-extern const ai_u64 s_combination_input_36_weights_array_u64[6144];
-extern const ai_u64 s_combination_input_36_bias_array_u64[32];
-extern const ai_u64 s_combination_input_44_weights_array_u64[6144];
-extern const ai_u64 s_combination_input_44_bias_array_u64[32];
-extern const ai_u64 s_combination_onnxAdd_136_weights_array_u64[6144];
-extern const ai_u64 s_combination_onnxAdd_136_bias_array_u64[32];
-extern const ai_u64 s_combination_input_60_weights_array_u64[6144];
-extern const ai_u64 s_combination_input_60_bias_array_u64[32];
-extern const ai_u64 s_combination_input_68_weights_array_u64[6144];
-extern const ai_u64 s_combination_input_68_bias_array_u64[32];
-extern const ai_u64 s_combination_onnxAdd_145_weights_array_u64[6144];
-extern const ai_u64 s_combination_onnxAdd_145_bias_array_u64[32];
-extern const ai_u64 s_combination_input_80_weights_array_u64[15360];
+extern const ai_u64 s_combination_input_36_bias_array_u64[16];
+extern const ai_u64 s_combination_input_44_weights_array_u64[1536];
+extern const ai_u64 s_combination_input_44_bias_array_u64[16];
+extern const ai_u64 s_combination_onnxAdd_127_weights_array_u64[1536];
+extern const ai_u64 s_combination_onnxAdd_127_bias_array_u64[16];
+extern const ai_u64 s_combination_input_60_weights_array_u64[1536];
+extern const ai_u64 s_combination_input_60_bias_array_u64[16];
+extern const ai_u64 s_combination_input_68_weights_array_u64[1536];
+extern const ai_u64 s_combination_input_68_bias_array_u64[16];
+extern const ai_u64 s_combination_onnxAdd_136_weights_array_u64[1536];
+extern const ai_u64 s_combination_onnxAdd_136_bias_array_u64[16];
+extern const ai_u64 s_combination_input_80_weights_array_u64[7680];
 extern const ai_u64 s_combination_input_80_bias_array_u64[6];
-extern const ai_u64 s_combination_input_4_weights_array_u64[672];
+extern const ai_u64 s_combination_input_4_weights_array_u64[336];
+extern const ai_u64 s_combination_input_4_bias_array_u64[16];
+extern const ai_u64 s_combination_input_12_weights_array_u64[1536];
+extern const ai_u64 s_combination_input_12_bias_array_u64[16];
+extern const ai_u64 s_combination_input_20_weights_array_u64[1536];
+extern const ai_u64 s_combination_input_20_bias_array_u64[16];
+extern const ai_u64 s_combination_onnxAdd_118_weights_array_u64[1536];
+extern const ai_u64 s_combination_onnxAdd_118_bias_array_u64[16];
+extern const ai_u64 s_combination_input_36_weights_array_u64[1536];
 
 
 

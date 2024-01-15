@@ -1,7 +1,7 @@
 {
     "_allocate_inputs": 4,
     "_allocate_outputs": 4,
-    "cli_parameters": "generate --name combination -m /Users/kangpx/onlineTiny2023/saved_models/ultra/onnx/fold_0_pre_combination_fullvalid.onnx --type onnx --compression none --verbosity 1 --workspace /var/folders/xk/ysyqb_jd2dld7w3pmzqmjf0m0000gn/T/mxAI_workspace8260624634720916720308822552485334 --output /Users/kangpx/.stm32cubemx/combination_output --allocate-inputs --series stm32f7 --allocate-outputs --split-weights --no-onnx-io-transpose",
+    "cli_parameters": "generate --name combination -m /Users/kangpx/onlineTiny2023/saved_models/ultra/onnx/fold_0_pre_combination_fullvalid.onnx --type onnx --compression none --verbosity 1 --workspace /var/folders/xk/ysyqb_jd2dld7w3pmzqmjf0m0000gn/T/mxAI_workspace14840670483612515781536510182032126 --output /Users/kangpx/.stm32cubemx/combination_output --allocate-inputs --series stm32f7 --allocate-outputs --split-weights --no-onnx-io-transpose",
     "cli_version": {
         "major": 1,
         "micro": 0,
@@ -13,7 +13,7 @@
         "factor": null,
         "layers": {}
     },
-    "date_time": "Tue Aug 22 20:37:12 2023",
+    "date_time": "Sat Aug 26 21:04:03 2023",
     "error": 0,
     "error_str": [],
     "exec_cmd": "generate",
